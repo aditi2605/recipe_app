@@ -5,7 +5,6 @@ from app.models import Recipe
 
 router = APIRouter()
 
-print("📦 recipes.py loaded")
 
 def get_db():
     db = SessionLocal()
@@ -13,12 +12,12 @@ def get_db():
         yield db
     finally:
         db.close()
-
-@router.get("/ping")
-def ping():
-    return {"msg": "pong"}
-
-
+#get all recipes
 @router.get("/recipes")
 def get_recipes(db: Session = Depends(get_db)):
+    return db.query(Recipe).all()
+
+#get recipes by suitable_for (veg, vegan, etc.) category:
+@router.get("recipes/suitablefor")
+def get_recipes_suitablefor(db: Session = Depends(get_db)):
     return db.query(Recipe).all()
