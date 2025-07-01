@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  #To load the .env file, call:
 
-url = os.getenv("DATABASE_URL") #Python's built-in way to access environment variables:
+url = os.getenv("DATABASE_URL") 
 engine = create_engine(url)
 SessionLocal = sessionmaker (bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
