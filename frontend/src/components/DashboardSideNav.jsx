@@ -1,60 +1,76 @@
 'use client'
 
 import Image from 'next/image'
-import Logo from '../../public/images/logo_3.jpg'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation';
-import { Menu, LayoutDashboard, Heart, PlusCircle, LogOut} from 'lucide-react'
+import Logo from '../../public/images/bite_cult_logo.png'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { LayoutDashboard, Heart, PlusCircle, LogOut } from 'lucide-react'
 import NavItem from './NavItem'
 
-export default function DashboardSideNav( { onSelect }){
-    const [isOpen, setIsOpen] = useState(true)
-    const router = useRouter()
+export default function DashboardSideNav({ onSelect }) {
+  const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter()
 
-    useEffect(() => {
-        const handleResize = () => {
-            if(window.innerWidth < 768){
-                setIsOpen(false)
-            }else {
-                setIsOpen(true)
-            }
-        }
+  const isOpen = isHovered
 
-        handleResize()
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
+  return (
+    <div
+      className={`h-screen transition-all duration-300 ease-in-out flex flex-col p-4 z-50
+        ${isOpen ? 'w-60' : 'w-20'}
+        bg-amber-200 text-[#F7FFF7]`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Logo */}
+      {/* logo btn */}
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className='w-14 h-14 rounded-full border-4 border-amber-300 shadow-ld bg-pink-300 flex items-center justify-center mb-4'
+          >
+              <Image 
+                src={Logo}
+                alt="Bite Cult Logo"
+                width={160}
+                height={80}
+                className='"rounded-full'
+              />
+          </motion.div>
 
-    return (
-        <div className={`h-screen bg-green-700 text-white flex flex-col transition-all duration-300 ${isOpen ? 'w-60': 'w-20'} p-4`}>
-            {/* Logo */}
-                <div className="flex items-center justify-between">
-                    <div className='hidden md:block'>
-                        <Image
-                            src={Logo}
-                            alt="logo"
-                            width={40}
-                            height={40}
-                            className="rounded-md xl:hidden"
-                        />
-                    </div>
-                    
-                    <button onClick={() => setIsOpen(!isOpen)} className='text-white sm:hidden'>
-                        <Menu />
-                    </button>
-                </div>
-                    <hr className='border-white my-6' />
+      <hr className="border-[#FF6B6B] mb-6" />
 
-                    <div className='flex flex-col mt-4 gap-4'>
-                        <NavItem onClick={() => onSelect('dashboard')} icon={<LayoutDashboard />} label="Dashboard" showLabel={isOpen} />
-                        <NavItem onClick={() => onSelect('favorites')} icon={<Heart />} label="Favorites" showLabel={isOpen} />
-                        <NavItem onClick={() => onSelect('addrecipe')} icon={<PlusCircle/>} label="Add Recipe" showLabel={isOpen} />
-                        <NavItem onClick={() => router.push('/')}icon={<LogOut />} label="Logout" showLabel={isOpen} />
-                       
-
-                    </div>
-            
-                
-        </div>
-    )
+      {/* Nav Items */}
+      <div className="flex flex-col gap-4 font-medium text-[#FF6B6B] font-bold">
+        <NavItem
+          onClick={() => onSelect('dashboard')}
+          icon={<LayoutDashboard />}
+          label="Dashboard"
+          showLabel={isOpen}
+          className="text-[#FF6B6B] font-semibold"
+        />
+        <NavItem
+          onClick={() => onSelect('favorites')}
+          icon={<Heart />}
+          label="Favorites"
+          showLabel={isOpen}
+          className="text-[#F7FFF7]"
+        />
+        <NavItem
+          onClick={() => onSelect('addrecipe')}
+          icon={<PlusCircle />}
+          label="Add Recipe"
+          showLabel={isOpen}
+          className="text-[#F7FFF7]"
+        />
+        <NavItem
+          onClick={() => router.push('/')}
+          icon={<LogOut />}
+          label="Logout"
+          showLabel={isOpen}
+          className="text-[#F7FFF7]"
+        />
+      </div>
+    </div>
+  )
 }

@@ -2,13 +2,25 @@
 
 import { useState, useEffect} from 'react'
 import { motion } from 'framer-motion'
-import { Search } from 'lucide-react'
-import Logo from '../../public/images/logo_3.jpg'
+import { Search, Settings, Lock, BellDot, Info, Heart  } from 'lucide-react'
+import Logo from '../../public/images/profile_img.jpg'
 import Image from 'next/image'
 
-export default function Header() {
+
+export default function Header({ handleViewRecipe, handleAddToFavorites, searchQuery, setSearchQuery}) {
     const [search, setSearch] = useState("")
     const [username, setUsername] = useState("")
+    const [profileCard, setProfileCard] = useState(false)
+    
+
+    const closeModal = () => {
+        setProfileCard(false)
+    }
+
+     const handleClick = () => {
+        setProfileCard(true)
+
+    }
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -16,6 +28,12 @@ export default function Header() {
         if (hour < 18) return "Good Afternoon";
         return "Good Evening";
     };
+
+    const handleSearch = (e) => {
+        if (e.key == 'Enter'){
+            setSearchQuery(value)
+        }
+    }
 
     useEffect(() => {
         const fetchUsername = async () => {
@@ -44,43 +62,77 @@ export default function Header() {
 
     }, [])
 
+    
+
+
     return (
-     <div className="bg-white shadow-md rounded-xl border border-green-100 px-8 py-4 flex flex-col lg:flex-row justify-between items-center gap-6 w-full">
-        
-         {/* Left: Logo + Brand */}
-        <div className="flex items-center gap-4">
-              <Image
-                      src={Logo}
-                      alt="logo"
-                      width={60}
-                      height={40}
-                      className="rounded-md"
+     <div className=" flex flex-row items-center py-4 items-right justify-between gap-4 w-full px-4 py-2">
+        <div className="relative w-full md:w-1/2">
+            <Search className="absolute top-1/2 right-3 transform -translate-y-1/2 text-pink-500" />
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter'){
+                        setSearchQuery(search)
+                    }}}
+                    placeholder="What do you want to eat today?"
+                    className="w-full pl-10 pr-4 py-2 bg-white text-pink-500 border border-amber-300 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-300"
+                />
+        </div>
+        <div className="flex-shrink-0">
+            <Image
+                src={Logo}
+                alt="logo"
+                width={60}
+                height={40}
+                className="rounded-full"
+                onClick={handleClick}
+            />
+            
+        </div>
+
+        {profileCard && (
+            <div className='fixed flex inset-0 bg-white/50 w-full justify-center items-center z-50 px-4'>
+                <div className="bg-[#F7FFF7] border border-[#FF6B6B] w-full max-w-md rounded-2xl p-6 relative shadow-2xl justify-ceneter items-center">
+                {/* Close Button */}
+                <button
+                    onClick={closeModal}
+                    className="absolute top-4 right-4 text-[#FF6B6B] text-2xl font-bold hover:scale-110 transition"
+                >
+                    ✕
+                </button>
+                
+                <div className="flex flex-col justify-center items-center">
+                     <Image
+                        src={Logo}
+                        alt="logo"
+                        width={100}
+                        height={40}
+                        className="rounded-full"
+                        
                     />
-            <div>
-            <h1 className="text-2xl font-bold text-green-800">Recipe Book</h1>
-            <p className="text-sm text-green-800">Your personalized recipe dashboard 🍱</p>
+                
+                    <h2 className="text-2xl font-bold text-center mb-6 text-[#FF6B6B] mt-2">
+                        {getGreeting()}, {username}
+                    </h2>
+                    <ul className=''>
+                        <li className='my-2 gap-2 flex text-lg text-[#FF6B6B] '><Settings />Settings</li>
+                        <li className='my-2 gap-2 flex text-lg text-[#FF6B6B] '><Lock />Privicy & Policy</li>
+                        <li className='my-2 gap-2 flex text-lg text-[#FF6B6B] '><BellDot />Notification</li>
+                        <li className='my-2 gap-2 flex text-lg text-[#FF6B6B] '><Info />Help</li>
+                        <li className='my-2 gap-2 flex text-lg text-[#FF6B6B] '><Heart />Invite a friend!</li>
+                    </ul>
+                
+                </div>
+                    
+                </div>
+
             </div>
-        </div>
 
-        {/* Center: Greeting */}
-        <div className="text-center lg:text-left">
-            <h2 className="text-xl font-semibold text-green-800">
-            🍽️ {getGreeting()}, <span className="italic text-green-900">{username}</span>
-            </h2>
-        </div>
+        )}
 
-        {/* Right: Search */}
-        <div className="relative w-full max-w-md">
-            <Search className="absolute top-1/2 left-3 transform -translate-y-1/2 text-green-600" />
-            <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search recipes..."
-            className="pl-10 pr-4 py-2 w-full bg-white text-green-900 border border-green-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
-        />
-        </div>
-        
+      
     </div>
     )
 }

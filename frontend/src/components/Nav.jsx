@@ -1,8 +1,9 @@
 'use client'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import Logo from '../../public/images/logo_3.jpg'
-import { Menu, X } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import Logo from '../../public/images/bite_cult_logo.png'
+import { LogIn, User, Users, Images, SquarePen } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
 export default function Nav( { trigger }) {
@@ -15,11 +16,28 @@ export default function Nav( { trigger }) {
   const [isSignup, setSignup] = useState(false)
   const [loading, setLoading] = useState(false)
   const [iconIndex, setIconIndex] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+
 
   const router = useRouter()
-  const icons = ['🍕', '🍔', '🧁', '🥗', '🌮', '🍰', '🥪' ]
+  const containerRef = useRef()
+
   const toggleModal = (type) => setModal(type)
-  const closeModal = () => setModal(null)
+ 
+
+  // scroll behavior: move logo to bottom
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY> 100 )
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -75,192 +93,255 @@ export default function Nav( { trigger }) {
 
   }, [trigger])
 
+  const closeModal = () => {
+    setModal(null);
+    setUsername('');
+    setEmail('');
+    setPassword('');
+  }
 
-  useEffect(() => {
-    if(!loading) return;
+  const switchToSignup = () => {
+    setModal('signup');
+    setUsername('');
+    setEmail('');
+    setPassword('');
+  }
 
-    const interval = setInterval(() => {
-      setIconIndex((prev) => (prev + 1) % icons.length)
-    }, 500)
-    return () => clearInterval(interval)
-  }, [loading])
+  const switchToLogin = () => {
+    setModal('login');
+    setUsername('');
+    setEmail('')
+    setPassword('');
+  }
+
+    const buttons = [
+    {label: 'Login', icon: LogIn, action: () => toggleModal('login'), color: 'bg-rose-500'},
+    {label: 'About', icon: User, action: () => router.push('#about'), color: 'bg-green-500'},
+    {label: 'Community', icon: Users, action: () => router.push('#joinCommunity'), color: 'bg-sky-400'},
+    {label: 'Gallery', icon: Images, action: () => router.push('#gallery'), color: 'bg-zinc-500' },
+    {label: "Blogs", icon: SquarePen, action: () => alert('Coming Soon!'), color: 'bg-orange-400'},
+
+  ]
+
+
+  // useEffect(() => {
+  //   if(!loading) return;
+
+  //   const interval = setInterval(() => {
+  //     setIconIndex((prev) => (prev + 1) % icons.length)
+  //   }, 500)
+  //   return () => clearInterval(interval)
+  // }, [loading])
 
 
   return (
     <>
-      {loading && (
-        <div className="fixed inset-0 z-[999] bg-white/80 backdrop-blur-sm flex items-center justify-center">
-          <div className="text-5xl animate-pulse ">
-            {icons[iconIndex]}
-          </div>
-        </div>
-      )}
-      {/* nav */}
-      <nav className="backdrop-blur-sm bg-white/30 fixed top-0 w-full z-50 border-b border-green-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Image src={Logo} alt="logo" width={40} height={40} className="rounded-full" />
-            <span className="text-green-800 font-bold text-xl">RecipeBook</span>
-          </div>
+      <div ref={containerRef}>
+        <motion.div 
+          className='fixed z-50' 
+          initial={{ top: '1rem', left: '50%', x: '-50%' }}
+          animate={{
+            top: scrolled ? '1rem' : '1rem',
+            left: scrolled ? '1rem' : '50%',
+            x: scrolled ? '0%' : '-50%',
+            transition: { duration: 0.5, ease: 'easeInOut'},
+          }}
+        >
+          {/* logo btn */}
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            // onClick={!scrolled ? () => setMenuOpen( (prev) => !prev): undefined}
+            className='w-24 h-24 rounded-full border-4 border-amber-300 shadow-ld bg-pink-300 flex items-center justify-center'
+          >
+              <Image 
+                src={Logo}
+                alt="Bite Cult Logo"
+                width={160}
+                height={80}
+                className='"rounded-full'
+              />
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex gap-4 items-center">
-            <button
-              onClick={() => toggleModal('login')}
-              className="px-4 py-2 text-sm rounded-full text-green-700 border border-green-600 hover:bg-green-600 hover:text-white transition"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => toggleModal('signup')}
-              className="px-4 py-2 text-sm rounded-full bg-green-600 text-white hover:bg-green-700 transition"
-            >
-              Sign Up
-            </button>
-          </div>
+              {/* menu */}
+              {/* <AnimatePresence> 
+                {!scrolled && menuOpen && (
+                  <motion.div
+                    className='absolute inset-0 flex items-center justify-center my-4 mx-4'
+                    initial={{ scale: 0 }}
+                    animate= {{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    {buttons.map((btn, index) => {
+                       const arc = 180
+                       const startAngle = 90 - arc / 2
+                       const step = arc / (buttons.length - 1)
+                       const angleDeg = startAngle + index * step
+                       const angle = (angleDeg * Math.PI) / 180
+                       const radius = 130
 
-          {/* Mobile menu toggle */}
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden">
-            {mobileMenuOpen ? <X className="w-6 h-6 text-green-800" /> : <Menu className="w-6 h-6 text-green-800" />}
-          </button>
-        </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden px-4 pb-4 flex flex-col gap-2">
-            <button
-              onClick={() => toggleModal('login')}
-              className="w-full px-4 py-2 text-green-700 border border-green-600 rounded-full hover:bg-green-100"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => toggleModal('signup')}
-              className="w-full px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700"
-            >
-              Sign Up
-            </button>
+                      const x = Math.cos(angle) * radius
+                      const y = Math.sin(angle) * radius
+
+                       return (
+                          <motion.button
+                            key={btn.label}
+                            onClick={btn.action}
+                            className={`absolute text-white px-4 py-2 justify-between rounded-full shadow-lg ${btn.color} font-semibold`}
+                            initial={{ opacity: 0, x: 0, y: 0 }}
+                            animate={{ opacity: 1, x, y }}
+                            transition={{ delay: 0.05 * index }}
+                          >
+                            {btn.emoji} {btn.label}
+                          </motion.button>
+                        )
+                    })}
+
+                  </motion.div>
+                )} 
+              </AnimatePresence> */}
+          </motion.div>
+
+        </motion.div>
+      </div>
+      {/* floting nav */}
+      {scrolled && (
+          <div className='fixed bottom-4 right-8 z-40 flex flex-col gap-4 bg-white/80 backdrop-blur-md px-4 py-4 rounded-full shadow-lg'>
+              {buttons.map((btn, index) => (
+                <button
+                  key={index}
+                  onClick={btn.action}
+                  className="text-2xl hover:scale-110 transition"
+                  title={btn.label}
+                >
+                  <btn.icon className='text-[#FF6B6B] font-black hover:text-pink-400' />
+                </button>
+              ))}
           </div>
         )}
-      </nav>
 
-      {/* login logout modal */}
+    
+      {/*Login/Signup Modal */}
       {modal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-[90%] max-w-md rounded-xl p-6 relative shadow-xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#F7FFF7] w-full max-w-md rounded-2xl p-6 relative shadow-2xl">
+            {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-600 text-lg hover:text-red-500"
+              className="absolute top-4 right-4 text-[#FF6B6B] text-2xl font-bold hover:scale-110 transition"
             >
               ✕
             </button>
-            <h2 className="text-xl text-green-800 font-bold mb-4 text-center p-2">
+
+            {/* Heading */}
+            <h2 className="text-2xl font-bold text-center mb-6 text-[#FF6B6B]">
               {modal === 'login' ? 'Login' : 'Create Account'}
             </h2>
 
-                {modal === 'login' ? (
-                  <form onSubmit={async (e) => {
-                    e.preventDefault();
-                    setLoading(true)
-                    await handleLogin(e);
-                    setLoading(false)
-                    }}
-                    className='space-y-4 p-2'
-                  >
-                    <input 
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border rounded text-black" 
-                      disabled={loading}
-                    />
-                     <input
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-2 border rounded text-black"
-                      disabled={loading}
-                    />
-                    <span className='text-sm text-black m-2 no-underline hover:underline right-3 bottom-3'>Forget password?</span>
-                    <button type="submit"
-                      disabled={loading}
-                      className="w-full h-12 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700 transition mt-2"
-                    >
-                      Submit
-                    </button> 
-                  </form>
-                ) : (
-                  <form onSubmit={handleSignup} autoComplete='off' className='space-y-4 p-2'>
-                    <input type="text"
-                      placeholder="Username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="w-full px-4 py-2 border rounded text-black" 
-                    />
-                    <input type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border rounded text-black" 
-                    />
-                     <input
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-2 border rounded text-black"
-                    />
-                    <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-2">
-                      Signup
-                    </button> 
-                  </form>
-
-                )}
-
-              {/* {modal === 'signup' && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="w-full px-4 py-2 border rounded text-black"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-2 border rounded text-black"
-                  />
-                </>
-              )}
-              {modal === 'login' && (
+            {/* Form */}
+            {modal === 'login' ? (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setLoading(true);
+                  await handleLogin(e);
+                  setLoading(false);
+                }}
+                className="space-y-4"
+              >
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] text-black placeholder-gray-500"
+                  disabled={loading}
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] text-black placeholder-gray-500"
+                  disabled={loading}
+                />
+                <div className="text-right">
+                  <span className="text-sm text-[#FF6B6B] cursor-pointer hover:underline">
+                    Forgot password?
+                  </span>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 bg-[#FF6B6B] text-[#F7FFF7] font-bold rounded-lg hover:bg-[#FF9F1C] transition"
+                >
+                  {loading ? 'Please wait...' : 'Login'}
+                </button>
+              </form>
+            ) : (
+              <form
+                onSubmit={handleSignup}
+                autoComplete="off"
+                className="space-y-4"
+              >
                 <input
                   type="text"
-                  placeholder="Username or Email"
+                  placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-4 py-2 border rounded text-black"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] text-black placeholder-gray-500"
                 />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] text-black placeholder-gray-500"
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] text-black placeholder-gray-500"
+                />
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-[#FF6B6B] text-[#F7FFF7] font-bold rounded-lg hover:bg-[#FF9F1C] transition"
+                >
+                  {loading ? 'Creating...' : 'Create Account'}
+                </button>
+              </form>
+            )}
+
+            {/* Toggle Link */}
+            <div className="mt-4 text-center">
+              {modal === 'login' ? (
+                <p className="text-sm text-[#333]">
+                  Don&apos;t have an account?{' '}
+                  <span
+                    onClick={() => setModal(switchToSignup)}
+                    className="text-[#FF6B6B] font-semibold cursor-pointer hover:underline"
+                  >
+                    Create one
+                  </span>
+                </p>
+              ) : (
+                <p className="text-sm text-[#333]">
+                  Already have an account?{' '}
+                  <span
+                    onClick={() => setModal(switchToLogin)}
+                    className="text-[#FF6B6B] font-semibold cursor-pointer hover:underline"
+                  >
+                    Login
+                  </span>
+                </p>
               )}
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded text-black"
-              />
-              <span className='text-sm text-black m-2 no-underline hover:underline right-3 bottom-3'>Forget password?</span>
-              <button type="submit" className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-2">
-                {modal === 'login' ? 'login' : 'signup'}
-              </button> */}
+            </div>
           </div>
         </div>
       )}
+
     </>
   )
 }

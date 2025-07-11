@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Recipe
 from app.schemas import RecipeRead, RecipeCreate
+from sqlalchemy import func
+from typing import List
 
 
 router = APIRouter()
@@ -25,32 +27,46 @@ def get_recipes(db: Session = Depends(get_db)):
     return db.query(Recipe).all()
 
 #get recipes by title
-@router.get("/recipes/searchbytitle")
+@router.get("/recipes/recipebytitle/{title}", response_model=list[RecipeRead])
 def get_recipes_by_title(
-    searchbytitle: str = Query(...),
+    title: str ,
     db: Session = Depends(get_db)
-    ):
-    return db.query(Recipe).filter(Recipe.title.ilike(f"%{searchbytitle}%")).all()
+):
+    
+    # Exact match
+    # recipeByTitle = db.query(Recipe).filter(
+    #     func.trim(func.lower(Recipe.title)) == title.lower().strip()
+    # ).all()
 
-# get recipes by id
-@router.get("/recipes/{id}", response_model=RecipeRead)
-def get_recipe_by_id(id: int, db: Session = Depends(get_db)):
-    recipe = db.query(Recipe).filter(Recipe.id == id).first() 
-    if not recipe:
-        print("Recipe not found")
-        raise HTTPException(status_code=404, detail="Recipe not found")
-    print(f"found recipe: {recipe.title}")
-    print(f"found recipe: {recipe.instructions}")
-    return recipe
+    # Or partial match:
+    recipeByTitle = db.query(Recipe).filter(
+        func.lower(Recipe.title).contains(title.lower())
+    ).all()
+
+    if not recipeByTitle:
+        raise HTTPException(status_code=404, detail="Searched recipe not found")
+
+    return recipeByTitle
+  
+
 
 
 #get recipes by suitable_for (veg, vegan, etc.) category:
-@router.get("/recipes/suitablefor")
-def get_recipes_by_suitablefor(
-    suitable_for: str = Query(...),
-    db: Session = Depends(get_db)
-    ):
-    return db.query(Recipe).filter(Recipe.suitable_for.ilike(f"%{suitable_for}%")).all()
+@router.get("/recipes/suitablefor", response_model=list[RecipeRead])
+def get_recipes_by_suitable_for(suitable_for: List[str] = Query(...), db: Session = Depends(get_db)):
+    recipes = db.query(Recipe).filter(Recipe.suitable_for.in_(suitable_for)).all()
+    if not recipes:
+        raise HTTPException(status_code=404, detail="suitable recipe not found")
+    return [RecipeRead.model_validate(recipe).model_dump() for recipe in recipes]
+
+#get recipes search by cuisine (indian, greek, asian, italian)
+@router.get("/recipes/searchbycuisine/{cuisine}", response_model=list[RecipeRead])
+def get_recipes_by_cusine(cuisine:str, db: Session = Depends(get_db)):
+    cuisine_recipes = db.query(Recipe).filter(func.lower(Recipe.cuisine) == cuisine.lower()).all()
+    if not cuisine_recipes:
+        raise HTTPException(status_code=404, detail='cusine recipe not found')
+    return [RecipeRead.model_validate(cuisines).model_dump() for cuisines in cuisine_recipes]
+
 
 #get recipes by allergens
 @router.get("/recipes/allergens")
@@ -119,6 +135,17 @@ async def create_recipe(
 #     db.refresh(new_recipe)
 #     return new_recipe
 
+
+# get recipes by id
+@router.get("/recipes/{id}", response_model=RecipeRead)
+def get_recipe_by_id(id: int, db: Session = Depends(get_db)):
+    recipe = db.query(Recipe).filter(Recipe.id == id).first() 
+    if not recipe:
+        print("Recipe not found")
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    print(f"found recipe: {recipe.title}")
+    print(f"found recipe: {recipe.instructions}")
+    return recipe
 
 # patch like/dislike recipes
 @router.patch("/recipes/{id}/like", response_model=RecipeRead)

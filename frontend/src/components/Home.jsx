@@ -2,11 +2,16 @@
 
 import Nav from '../components/Nav.jsx'
 import About from '../components/About.jsx'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef, useState, useEffect } from 'react'
+import ConnectPeople from './ConnectPeople.jsx'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
+// import AOS from 'aos'
+// import 'aos/dist/aos.css'
+import Footer from './Footer.jsx'
+import JoinCommunity from './JoinCommunity.jsx'
+import Gallery from './Gallery.jsx'
 
-export default function Home({ handleLogin }) {
+export default function Home() {
   const cards = [
     {
       img: "/images/pancake.jpg",
@@ -52,182 +57,340 @@ export default function Home({ handleLogin }) {
       icon: "🍰",
       avatar: "👨🏻‍🍳",
     },
-  ];
+  ]
 
   const [modalTrigger, setModalTrigger] = useState(null)
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [typedText, setTypedText] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [typedText, setTypedText] = useState("")
+
+  // useEffect(() => {
+  //   AOS.init({ duration: 800, once: true })
+  // }, [])
 
   useEffect(() => {
-    let typingTimeout;
-    let currentIndex = 0;
-    const card = cards[activeIndex];
-    setTypedText("");
+    // AOS.init({ duration: 800, once: true })
+
+    let typingTimeout
+    let currentIndex = 0
+    const card = cards[activeIndex]
+    setTypedText("")
 
     const typingInterval = setInterval(() => {
-      currentIndex++;
-      setTypedText(card.title.slice(0, currentIndex));
+      currentIndex++
+      setTypedText(card.title.slice(0, currentIndex))
       if (currentIndex >= card.title.length) {
-        clearInterval(typingInterval);
+        clearInterval(typingInterval)
         typingTimeout = setTimeout(() => {
-          setActiveIndex((prev) => (prev + 1) % cards.length);
-        }, 2000);
+          setActiveIndex((prev) => (prev + 1) % cards.length)
+        }, 2000)
       }
-    }, 150);
+    }, 150)
 
     return () => {
-      clearInterval(typingInterval);
-      clearTimeout(typingTimeout);
-    };
-  }, [activeIndex]);
+      clearInterval(typingInterval)
+      clearTimeout(typingTimeout)
+    }
+  }, [activeIndex])
 
   const directions = [
     { x: 0, y: -140 },
     { x: 140, y: 0 },
     { x: 0, y: 140 },
     { x: -140, y: 0 },
-  ];
-
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ['100%', '0%']);
-  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0])
-
+  ]
 
   return (
     <>
-      <Nav trigger={modalTrigger} />
+      <Nav trigger= {modalTrigger} />
 
-      <div ref={containerRef} className="relative h-[200vh] overflow-hidden">
+      <div className="w-full overflow-x-hidden space-y-0 bg-[#CBF3F0]">
 
-        {/* Hero Section (Fixed) */}
-        <motion.section
-          className="relative top-0 left-0 w-full h-screen z-0 bg-gradient-to-br from-lime-50 to-pink-50"
-        >
-          <div className="h-full px-4 sm:px-6 md:px-10 py-24 flex flex-col lg:flex-row items-center justify-between gap-12 w-full max-w-7xl mx-auto">
-
-            {/* Animated Emojis Background */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none opacity-10 text-green-300"
-              animate={{ x: [0, 10, -10, 0], y: [0, -10, 10, 0] }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <div className="absolute top-20 left-10 text-6xl">🍕</div>
-              <div className="absolute top-30 left-360 text-8xl -translate-x-1/2 -translate-y-1/2">🍩</div>
-              <div className="absolute bottom-10 left-140 text-6xl -translate-x-1/2 -translate-y-1/2">🌯</div>
-              <div className="absolute top-90 right-40 text-7xl rotate-12">🍔</div>
-              <div className="absolute bottom-10 right-10 text-7xl rotate-12">🥗</div>
-              <div className="absolute top-1/3 left-1/2 text-6xl -translate-x-1/2 -translate-y-1/2">🍟</div>
-              <div className="absolute bottom-8 left-20 text-8xl -translate-x-1/2 -translate-y-1/2">🍪</div>
-            </motion.div>
+        {/* Hero Section */}
+        <section className="w-full bg-[#F7FFF7] pt-30 ">
+          <div className="max-w-7xl px-4 sm:px-6 md:px-10 mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 md:gap-24">
 
             {/* Left Content */}
-            <div className="w-full lg:w-1/2 z-10 text-center lg:text-left space-y-6 px-2 md:px-4">
-
-              <h1 className="text-5xl sm:text-6xl font-extrabold text-green-800 leading-tight">
+            <div className="w-full lg:w-1/2 text-center lg:text-left space-y-6" >
+              <h1 className="text-6xl sm:text-5xl md:text-6xl font-extrabold text-[#FF6B6B] leading-tight">
                 Discover Recipes
                 <br />
-                <span className="text-gray-700 font-medium">Crafted for Every Craving</span>
+                <span className="text-[#FF9F1C] font-medium text-5xl">Crafted for Every Craving</span>
               </h1>
-              <p className="text-gray-600 text-base sm:text-lg">
+              <p className="text-[#1F1F1F] text-base sm:text-lg">
                 Your digital recipe book to explore, save & share delicious dishes from around the world.
               </p>
-              <div className="flex gap-4 justify-center lg:justify-start">
+              <div className="flex gap-4 justify-center lg:justify-start flex-wrap">
                 <button
                   onClick={() => setModalTrigger('login')}
-                  className="px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition font-semibold"
+                  className="px-6 py-3 bg-[#FF6B6B] text-white text-xl rounded-full hover:bg-[#FF9F1C] transition font-semibold"
                 >
                   Browse Recipes
                 </button>
                 <button
                   onClick={() => setModalTrigger('signup')}
-                  className="px-6 py-3 border border-green-600 text-green-700 rounded-full hover:bg-green-100 transition font-semibold"
+                  className="px-6 py-3 border border-[#FF6B6B] text-[#FF6B6B] text-xl rounded-full hover:bg-[#FFE66D] transition font-semibold"
                 >
                   Submit Yours
                 </button>
               </div>
             </div>
 
-            {/* Right Content (Cards) */}
-            <div className="relative w-full max-w-[320px] sm:max-w-[200px] h-[280px] flex justify-center items-center mx-auto pt-20 z-10 border">
+            {/* Cards Section */}
+            <div className="w-full lg:w-1/2 flex flex-col items-center">
+              <div className="relative hidden md:flex w-full max-w-[330px] sm:max-w-[240px] md:max-w-[220px] h-[400px] sm:h-[320px] md:h-[560px] justify-center items-start pt-6 sm:pt-10 md:pt-42 md:mb-2 sm:mb-2 z-10" data-aos="fade-right">
+                {cards.map((dish, index) => {
+                  const isActive = index === activeIndex
+                  const dirIndex = (index - activeIndex + cards.length) % cards.length
+                  const { x, y } = directions[dirIndex % 4]
+                  const scale = isActive ? 1.15 : 0.9
+                  const zIndex = isActive ? 20 : 0
 
-              {cards.map((dish, index) => {
-                const isActive = index === activeIndex;
-                const dirIndex = (index - activeIndex + cards.length) % cards.length;
-                const { x, y } = directions[dirIndex % 4];
-                const scale = isActive ? 1.15 : 0.9;
-                const zIndex = isActive ? 20 : 0;
-
-                return (
-                  <motion.div
-                    key={index}
-                    className="absolute w-[220px] py-12"
-                    animate={{ x, y, scale, zIndex, opacity: isActive ? 1 : 0.6 }}
-                    transition={{ type: "spring", stiffness: 120, damping: 20 }}
-                    whileHover={{ scale: 1.05, rotate: 1 }}
-                  >
+                  return (
                     <div
-                      className={`bg-white rounded-3xl p-4 space-y-3 transition duration-300 ${
-                        isActive
-                          ? "ring-4 ring-offset-2 ring-transparent bg-clip-padding shadow-xl shadow-[0_0_30px_5px_rgba(34,197,94,0.4)]"
-                          : "opacity-80"
-                      }`}
+                      key={index}
+                      className="absolute transition-all duration-300 ease-in-out"
                       style={{
-                        backgroundImage: isActive
-                          ? "linear-gradient(135deg, #bbf7d0,rgb(250, 227, 249))"
-                          : "white",
-                        boxShadow: isActive
-                          ? "0 0 30px 10px rgba(16, 185, 129, 0.4)"
-                          : "none",
+                        transform: `translate(${x}px, ${y}px) scale(${scale})`,
+                        zIndex,
+                        opacity: isActive ? 1 : 0.6,
+                        width: '100%',
                       }}
                     >
-                      <div className="flex justify-between items-center">
-                        <span className="text-xl">{dish.icon}</span>
-                        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                          {dish.tag}
-                        </span>
-                      </div>
-                      <Image
-                        src={dish.img}
-                        alt={dish.title}
-                        width={300}
-                        height={200}
-                        className="rounded-xl object-cover w-full h-30"
-                      />
-                      <h3 className="text-green-800 font-bold text-lg">
-                        {isActive ? typedText : dish.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">{dish.description}</p>
-                      <div className="text-xs text-gray-400">⏱️ {dish.prepTime}</div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm flex items-center gap-2">
-                          <span className="text-pink-500 text-base">❤️</span> {dish.likes} likes
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{dish.avatar}</span>
-                          <span className="text-xs text-gray-600">{dish.author}</span>
+                      <div
+                        className={`bg-white rounded-3xl p-4 space-y-3 ${
+                          isActive
+                            ? "ring-4 ring-offset-2 ring-transparent bg-clip-padding shadow-xl shadow-[0_0_30px_5px_rgba(255,107,107,0.4)]"
+                            : "opacity-80"
+                        }`}
+                        style={{
+                          backgroundImage: isActive
+                            ? "linear-gradient(135deg, #FFE66D, #CBF3F0)"
+                            : "white",
+                          boxShadow: isActive
+                            ? "0 0 30px 10px rgba(255, 107, 107, 0.4)"
+                            : "none",
+                        }}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className="text-xl">{dish.icon}</span>
+                          <span className="bg-[#FFE66D] text-[#FF6B6B] text-xs px-2 py-1 rounded-full">
+                            {dish.tag}
+                          </span>
+                        </div>
+                        <Image
+                          src={dish.img}
+                          alt={dish.title}
+                          width={300}
+                          height={180}
+                          className="rounded-xl object-cover w-full h-28 sm:h-24 md:h-20"
+                        />
+                        <h3 className="text-[#FF6B6B] font-bold text-lg">
+                          {isActive ? typedText : dish.title}
+                        </h3>
+                        <p className="text-sm text-[#1F1F1F]">{dish.description}</p>
+                        <div className="text-xs text-[#1F1F1F]">⏱️ {dish.prepTime}</div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#FF9F1C] text-sm flex items-center gap-2">
+                            <span className="text-base">❤️</span> {dish.likes} likes
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl">{dish.avatar}</span>
+                            <span className="text-xs text-[#1F1F1F]">{dish.author}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </motion.div>
-                );
-              })}
+                  )
+                })}
+              </div>
+
+              {/* Mobile Horizontal Scroll */}
+              <div className="md:hidden flex gap-4 overflow-x-auto px-1 pt-10 w-full">
+                {cards.map((dish, index) => (
+                  <div
+                    key={index}
+                    className="min-w-[260px] max-w-[280px] bg-white rounded-3xl p-4 space-y-3 shadow-md flex-shrink-0"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="text-xl">{dish.icon}</span>
+                      <span className="bg-[#FFE66D] text-[#FF6B6B] text-xs px-2 py-1 rounded-full">
+                        {dish.tag}
+                      </span>
+                    </div>
+                    <Image
+                      src={dish.img}
+                      alt={dish.title}
+                      width={300}
+                      height={180}
+                      className="rounded-xl object-cover w-full h-28"
+                    />
+                    <h3 className="text-[#FF6B6B] font-bold text-lg">{dish.title}</h3>
+                    <p className="text-sm text-[#1F1F1F]">{dish.description}</p>
+                    <div className="text-xs text-[#1F1F1F]">⏱️ {dish.prepTime}</div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#FF9F1C] text-sm flex items-center gap-2">
+                        <span className="text-base">❤️</span> {dish.likes} likes
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">{dish.avatar}</span>
+                        <span className="text-xs text-[#1F1F1F]">{dish.author}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+
           </div>
-        </motion.section>
+
+          {/* Wavy Divider */}
+          <div className="w-full overflow-hidden leading-[0]">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto fill-current text-[#FFE66D]">
+              <path d="M0,64 
+                      C60,80 80,160 100,192 
+                      C120,224 140,224 160,192 
+                      C180,160 200,64 240,64 
+                      C280,64 300,128 320,192 
+                      C340,256 380,256 400,192 
+                      C420,128 460,128 480,192 
+                      C500,256 540,256 560,192 
+                      C580,128 620,128 640,192 
+                      C660,256 700,256 720,192 
+                      C740,128 780,128 800,192 
+                      C820,256 860,256 880,192 
+                      C900,128 940,128 960,192 
+                      C980,256 1020,256 1040,192 
+                      C1060,128 1100,128 1120,192 
+                      C1140,256 1180,256 1200,192 
+                      C1220,28 1260,128 1280,192
+                      C1300,256 1340,256 1360,192 
+                      C1380,128 1400,64 1440,64 
+                      L1440,320 L0,320 Z" />
+            </svg>
+          </div>
+        </section>
 
         {/* About Section */}
-       <motion.section
-  style={{ y, opacity }}
-  className="absolute top-0 left-0 w-full h-screen z-10 bg-[#fffefc] bg-opacity-95 backdrop-blur-md flex items-center justify-center"
->
-  <About />
-</motion.section>
+        <section className="bg-[#FFE66D]" >
+          <About />
+          <div className="w-full overflow-hidden leading-[0]">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto fill-current text-[#fefae0]">
+              <path d="M0,64
+                C60,80 80,160 100,192 
+                C120,224 140,224 160,192 
+                C180,160 200,64 240,64 
+                C280,64 300,128 320,192 
+                C340,256 380,256 400,192 
+                C420,128 460,128 480,192 
+                C500,256 540,256 560,192 
+                C580,128 620,128 640,192 
+                C660,256 700,256 720,192 
+                C740,128 780,128 800,192 
+                C820,256 860,256 880,192 
+                C900,128 940,128 960,192 
+                C980,256 1020,256 1040,192 
+                C1060,128 1100,128 1120,192 
+                C1140,256 1180,256 1200,192 
+                C1220,28 1260,128 1280,192
+                C1300,256 1340,256 1360,192 
+                C1380,128 1400,64 1440,64 
+                L1440,320 L0,320 Z" /> 
+              </svg>
+          </div>
+        </section>
+
+        {/* ConnectPeople Section */}
+        {/* <section className="bg-pink-400" >
+          <ConnectPeople />
+           <div className="w-full overflow-hidden leading-[0]">
+                      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto fill-current text-[#fefae0]">
+                        <path d="M0,64 
+                                C60,80 80,160 100,192 
+                                C120,224 140,224 160,192 
+                                C180,160 200,64 240,64 
+                                C280,64 300,128 320,192 
+                                C340,256 380,256 400,192 
+                                C420,128 460,128 480,192 
+                                C500,256 540,256 560,192 
+                                C580,128 620,128 640,192 
+                                C660,256 700,256 720,192 
+                                C740,128 780,128 800,192 
+                                C820,256 860,256 880,192 
+                                C900,128 940,128 960,192 
+                                C980,256 1020,256 1040,192 
+                                C1060,128 1100,128 1120,192 
+                                C1140,256 1180,256 1200,192 
+                                C1220,28 1260,128 1280,192
+                                C1300,256 1340,256 1360,192 
+                                C1380,128 1400,64 1440,64 
+                                L1440,320 L0,320 Z" />
+                      </svg>
+            </div>  
+        </section> */}
+
+        {/* Commnity Section */}
+        <section  className="bg-[#fefae0]"> 
+          <JoinCommunity />
+            <div className="w-full overflow-hidden leading-[0]">
+                      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto fill-current text-[#FF6B6B]">
+                        <path d="M0,64 
+                                C60,80 80,160 100,192 
+                                C120,224 140,224 160,192 
+                                C180,160 200,64 240,64 
+                                C280,64 300,128 320,192 
+                                C340,256 380,256 400,192 
+                                C420,128 460,128 480,192 
+                                C500,256 540,256 560,192 
+                                C580,128 620,128 640,192 
+                                C660,256 700,256 720,192 
+                                C740,128 780,128 800,192 
+                                C820,256 860,256 880,192 
+                                C900,128 940,128 960,192 
+                                C980,256 1020,256 1040,192 
+                                C1060,128 1100,128 1120,192 
+                                C1140,256 1180,256 1200,192 
+                                C1220,28 1260,128 1280,192
+                                C1300,256 1340,256 1360,192 
+                                C1380,128 1400,64 1440,64 
+                                L1440,320 L0,320 Z" />
+                      </svg>
+            </div>
+        </section>
+
+         {/* Gallery Section */}
+        <section className="bg-[#FF6B6B]">
+          <Gallery />
+             <div className="w-full overflow-hidden leading-[0]">
+                      <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto fill-current text-[#F7FFF7]">
+                        <path d="M0,64 
+                                C60,80 80,160 100,192 
+                                C120,224 140,224 160,192 
+                                C180,160 200,64 240,64 
+                                C280,64 300,128 320,192 
+                                C340,256 380,256 400,192 
+                                C420,128 460,128 480,192 
+                                C500,256 540,256 560,192 
+                                C580,128 620,128 640,192 
+                                C660,256 700,256 720,192 
+                                C740,128 780,128 800,192 
+                                C820,256 860,256 880,192 
+                                C900,128 940,128 960,192 
+                                C980,256 1020,256 1040,192 
+                                C1060,128 1100,128 1120,192 
+                                C1140,256 1180,256 1200,192 
+                                C1220,28 1260,128 1280,192
+                                C1300,256 1340,256 1360,192 
+                                C1380,128 1400,64 1440,64 
+                                L1440,320 L0,320 Z" />
+                      </svg>
+            </div>
+        </section>
+
+         {/* FooterSection */}
+        <section className="bg-[#F7FFF7]">   
+          <Footer />
+        </section>
       </div>
     </>
-  );
+  )
 }
