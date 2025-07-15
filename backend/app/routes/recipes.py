@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Recipe
 from app.schemas import RecipeRead, RecipeCreate
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from typing import List
 
 
@@ -28,10 +28,7 @@ def get_recipes(db: Session = Depends(get_db)):
 
 #get recipes by title
 @router.get("/recipes/recipebytitle/{title}", response_model=list[RecipeRead])
-def get_recipes_by_title(
-    title: str ,
-    db: Session = Depends(get_db)
-):
+def get_recipes_by_title( title: str, db: Session = Depends(get_db)):
     
     # Exact match
     # recipeByTitle = db.query(Recipe).filter(
@@ -39,11 +36,10 @@ def get_recipes_by_title(
     # ).all()
 
     # Or partial match:
-    recipeByTitle = db.query(Recipe).filter(
-        func.lower(Recipe.title).contains(title.lower())
-    ).all()
+    recipeByTitle = db.query(Recipe).filter(func.lower(Recipe.title).contains(title.lower())).all()
 
     if not recipeByTitle:
+        # return []
         raise HTTPException(status_code=404, detail="Searched recipe not found")
 
     return recipeByTitle
@@ -69,12 +65,20 @@ def get_recipes_by_cusine(cuisine:str, db: Session = Depends(get_db)):
 
 
 #get recipes by allergens
-@router.get("/recipes/allergens")
-def get_recipes_by_allergens(
-        allergens: list = Query(...),
-        db: Session = Depends(get_db)
-    ):
-    return db.query(Recipe).filter(Recipe.allergens.ilike(f"%{allergens}%")).all()
+# @router.get("/recipes/allergens")
+# def get_recipes_by_allergens(
+#         allergens: list = Query(...),
+#         db: Session = Depends(get_db)
+#     ):
+#     return db.query(Recipe).filter(Recipe.allergens.ilike(f"%{allergens}%")).all()
+
+@router.get("/recipes/allergens", response_model=list[RecipeRead])
+def get_recipes_by_allergens( allergens: list[str] = Query(...), db: Session = Depends(get_db)):
+    filters = [Recipe.allergens.ilike(f"%{a}%") for a in allergens]
+    recipes = db.query(Recipe).filter(or_(*filters)).all()
+    if not recipes:
+        raise HTTPException(status_code=404, detail="No recipes math allergens")
+    return [RecipeRead.model_validate(r).model_dump() for r in recipes]
 
 
 #post a new recipes
@@ -82,52 +86,62 @@ def get_recipes_by_allergens(
 async def create_recipe(
     title: str = Form(...),
     suitable_for: str = Form(...),
-    cooking_time: str = Form(...),
+    cooking_time: int = Form(...),
     allergens: str = Form(...),
     category: str = Form(...),
     cuisine: str = Form(...),
     ingredients: str = Form(...),
     instructions: str = Form(...),
-    nutrition: str = Form(...),
+    calories: int = Form(...),
+    fat: int = Form(...),
+    sugar: int = Form(...),
+    protine: int = Form(...),
+    carbs: int = Form(...),
     cooking_method: str = Form(...),
     difficulty: str = Form(...),
     origin: str = Form(...),
     tips: str = Form(...),
     substitution: str = Form(...),
-    serves: str = Form(...),
+    serves: int = Form(...),
+    tag: str = Form(...),
     image: UploadFile = Form(...),
     db: Session = Depends(get_db)
 ):
-    # save uploaded images to disk
-    filename = f"{uuid.uuid4().hex}_{image.filename}"  
+    filename = f"{uuid.uuid4().hex}_{image.filename}"
     file_path = os.path.join(UPLOAD_DIR, filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
 
-    new_recipe = Recipe (
-        title = title,
-        suitable_for = suitable_for,
-        cooking_time = cooking_time,
-        instructions = instructions,
-        allergens = allergens,
-        category = category,
-        cuisine = cuisine,
-        ingredients = ingredients,
-        nutrition = nutrition,
-        cooking_method = cooking_method,
-        difficulty = difficulty,
-        origin = origin,
-        tips = tips,
-        substitution = substitution,
-        serves = serves,
-        image = filename
+    new_recipe = Recipe(
+        title=title,
+        suitable_for=suitable_for,
+        cooking_time=cooking_time,
+        instructions=instructions,
+        allergens=allergens,
+        category=category,
+        cuisine=cuisine,
+        ingredients=ingredients,
+        calories=calories,
+        fat=fat,
+        sugar=sugar,
+        protine=protine,
+        carbs=carbs,
+        cooking_method=cooking_method,
+        difficulty=difficulty,
+        origin=origin,
+        tips=tips,
+        substitution=substitution,
+        tag=tag,
+        serves=serves,
+        image=filename
     )
-    
+
     db.add(new_recipe)
     db.commit()
     db.refresh(new_recipe)
     return new_recipe
+
 # def create_recipe(recipe: RecipeCreate, db: Session= Depends(get_db)):
 #     new_recipe = Recipe(**recipe.model_dump())
 #     db.add(new_recipe)

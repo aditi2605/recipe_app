@@ -11,15 +11,20 @@ class RecipeCreate(BaseModel):
     cuisine :str
     ingredients : str
     instructions: str
-    nutrition : str
-    cooking_time : str
+    calories: int
+    fat: int
+    sugar: int
+    protine: int
+    carbs: int
+    cooking_time : int
     cooking_method: str
     difficulty :str
     origin : str
     tips : str
     substitution : str
-    serves :int
+    serves : int
     image : str
+    tag: str
     likes: int
     dislikes: int
 
@@ -32,8 +37,12 @@ class RecipeRead(RecipeCreate):
     cuisine: str
     ingredients: str
     instructions: Optional[str] = None
-    nutrition: str
-    cooking_time: str
+    calories: int
+    sugar: int
+    fat: int
+    protine: int
+    carbs: int
+    cooking_time: int
     cooking_method: str
     difficulty: str
     origin: str
@@ -41,6 +50,7 @@ class RecipeRead(RecipeCreate):
     substitution: str
     serves: int
     image: str
+    tag: str
     likes: Optional[int] = 0
     dislikes: Optional[int] = 0
     class Config:

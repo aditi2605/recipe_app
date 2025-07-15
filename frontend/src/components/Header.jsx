@@ -7,7 +7,7 @@ import Logo from '../../public/images/profile_img.jpg'
 import Image from 'next/image'
 
 
-export default function Header({ handleViewRecipe, handleAddToFavorites, searchQuery, setSearchQuery}) {
+export default function Header({ handleSearchSubmit, handleViewRecipe, handleAddToFavorites, searchQuery, setSearchQuery}) {
     const [search, setSearch] = useState("")
     const [username, setUsername] = useState("")
     const [profileCard, setProfileCard] = useState(false)
@@ -29,9 +29,10 @@ export default function Header({ handleViewRecipe, handleAddToFavorites, searchQ
         return "Good Evening";
     };
 
-    const handleSearch = (e) => {
+    const handleKeyDown = (e) => {
         if (e.key == 'Enter'){
-            setSearchQuery(value)
+            handleSearchSubmit(search)
+            setSearch("")
         }
     }
 
@@ -73,9 +74,7 @@ export default function Header({ handleViewRecipe, handleAddToFavorites, searchQ
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter'){
-                        setSearchQuery(search)
-                    }}}
+                    onKeyDown={handleKeyDown}
                     placeholder="What do you want to eat today?"
                     className="w-full pl-10 pr-4 py-2 bg-white text-pink-500 border border-amber-300 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-300"
                 />

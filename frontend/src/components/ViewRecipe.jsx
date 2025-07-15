@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { X, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { X, Clock, UsersRound, Flame, Layers } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function ViewRecipe({ recipeId, setSelectedView }) {
@@ -15,6 +15,16 @@ export default function ViewRecipe({ recipeId, setSelectedView }) {
   const handleRedirect = () => {
         setSelectedView('dashboard')
     }
+
+  const highlightAmount = (item) =>
+    item.replace(/^\s*([\d\/\s\w.]+)(?=\s)/, "<strong>$1</strong>");
+
+  const InfoBadge = ({ icon, label }) => (
+    <div className="flex flex-col items-center justify-start pt-2 w-18 h-32 shadow-xxl bg-amber-300 text-[#FF6B6B] rounded-full shadow-xl">
+      <span className="text-4xl text-center bg-white rounded-full w-14 h-14 py-2 px-2 m-1">{icon}</span>
+      <span className="text-xs font-bold text-black text-center py-2 px-2">{label}</span>
+    </div>
+  );
 
   useEffect(() => {
     if (!recipeId) return
@@ -36,7 +46,7 @@ export default function ViewRecipe({ recipeId, setSelectedView }) {
     recipeById()
   }, [recipeId])
 
-// Patch like\dislike reaction api
+
 
 //   load previous reaction from localstorage
 useEffect( () => {
@@ -72,6 +82,7 @@ useEffect( () => {
         })
 
         const updated = await res.json()
+        console.log("updated:", updated)
         setRecipe(updated)
         setReactionType(type)
         localStorage.setItem(`reaction_${recipeId}`, type)
@@ -90,78 +101,102 @@ useEffect( () => {
   )
 
   return (
-   <section className="flex flex-col lg:flex-row bg-gradient-to-r from-green-50 via-yellow-50 to-pink-50 shadow-inner justify-center items-center px-4 py-10 sm:px-6 lg:px-12">
-  <motion.div
-    whileHover={{ scale: 1.01 }}
-    className="relative w-full max-w-4xl bg-white/80 backdrop-blur-lg border border-green-100 rounded-3xl shadow-xl transition-all duration-300 overflow-hidden"
-  >
-    {/* Close Button */}
-    <button
-      onClick={handleRedirect}
-      className="absolute top-4 right-4 z-10 text-gray-800 bg-white/90 hover:bg-red-100 rounded-full p-2 shadow-md transition"
-      aria-label="Close"
-    >
-      <X className="w-5 h-5" />
-    </button>
-
-    {/* Image Section */}
-    <div className="relative w-full h-72 sm:h-96 rounded-t-3xl overflow-hidden">
+   <section className="flex flex-col items-center px-4 py-8 min-h-screen">
+  <div className="max-w-xl w-full bg-white rounded-3xl shadow-xl overflow-hidden">
+    {/* Recipe Image */}
+    <div className="relative w-full h-96">
       <Image
         src={`http://localhost:8000/uploads/${recipe.image}`}
         alt={recipe.title}
         fill
         className="object-cover"
       />
-      <div className="absolute bottom-0 w-full h-20 bg-gradient-to-t from-black/60 to-transparent" />
-
-      {/* Reactions */}
-      <div className="absolute bottom-4 right-4 flex gap-3">
-        <button
-          onClick={() => handleRection('like')}
-          className="text-white bg-green-500 hover:bg-green-600 rounded-full p-2 shadow transition"
-          aria-label="Like"
-        >
-          <ThumbsUp className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => handleRection('dislike')}
-          className="text-white bg-red-400 hover:bg-red-500 rounded-full p-2 shadow transition"
-          aria-label="Dislike"
-        >
-          <ThumbsDown className="w-5 h-5" />
-        </button>
-      </div>
+      <button
+        onClick={handleRedirect}
+        className="absolute top-4 left-4 bg-[#FF6B6B] rounded-full p-2 shadow"
+      >
+        <X className="w-5 h-5 text-white" />
+      </button>
     </div>
 
-    {/* Content */}
-    <div className="p-6 md:p-8 space-y-6">
-      <h2 className="text-3xl font-extrabold text-green-800 flex items-center gap-2">
-        🍽️ {recipe.title}
-      </h2>
-
-      <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-800">
-        <p><span className="font-semibold">⏱ Cooking Time:</span> {recipe.cooking_time}</p>
-        <p><span className="font-semibold">🌍 Cuisine:</span> {recipe.cuisine}</p>
-        <p><span className="font-semibold">👥 Serves:</span> {recipe.serves}</p>
-        <p><span className="font-semibold">🧘 Suitable For:</span> {recipe.suitable_for}</p>
-        <p><span className="font-semibold">🍽️ Category:</span> {recipe.category}</p>
-        {recipe.nutrition && (
-          <p><span className="font-semibold">🥦 Nutrition:</span> {recipe.nutrition}</p>
-        )}
-        <p><span className="font-semibold">👍 Likes:</span> {recipe.likes}</p>
-        <p><span className="font-semibold">👎 Dislikes:</span> {recipe.dislikes}</p>
+    {/* Recipe Content */}
+    <div className="p-6">
+      {/* Title & Cuisine */}
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">{recipe.title}</h2>
+          <p className="text-gray-500">{recipe.cuisine}</p>
+        </div>
+        <div className="flex items-center gap-1 bg-amber-300 text-black px-3 py-1 rounded-full text-sm font-bold shadow-xl">
+          ⭐ {recipe.rating || '4.5'}
+        </div>
       </div>
-      
-      <div className="space-y-3 text-gray-700 mt-6">
-        <p><span className="font-semibold">📝 Ingredients:</span> {recipe.ingredients}</p>
-        <p><span className="font-semibold">👨‍🍳 Instructions:</span> {recipe.instructions}</p>
-        {recipe.substitution && (
-          <p><span className="font-semibold">🔄 Substitution:</span> {recipe.substitution}</p>
-        )}
+
+      {/*  Badges */}
+      <div className="flex flex-wrap gap-1 my-2 text-black justify-center items-center">
+        <InfoBadge className='text-black' icon={<Clock className='w-10 h-8 text-black' />} label={`${recipe.cooking_time} min`} />
+        <InfoBadge icon={<UsersRound className='w-10 h-8 text-black'  />} label={`${recipe.serves} Serving`} />
+        <InfoBadge icon={<Flame className='w-10 h-8 text-black'  />} label={`${recipe.calories} Cal`} />
+        <InfoBadge icon={<Layers className='w-10 h-8 text-black'  />} label={`${recipe.difficulty || 'Easy'}`} />
+      </div>
+
+      {/* Ingredients */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Ingredients</h3>
+        <ul className="list-disc list-inside space-y-1 text-gray-700">
+          {recipe.ingredients.split(',').map((item, idx) => (
+            <li key={idx} dangerouslySetInnerHTML={{ __html: highlightAmount(item) }} />
+          ))}
+        </ul>
+      </div>
+
+      {/* Directions */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Instructions</h3>
+        <p className="text-gray-700">{recipe.instructions}</p>
+      </div>
+
+      {/* Substitute */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Substitute</h3>
+        <p className="text-gray-700">{recipe.substitution}</p>
+      </div>
+
+      {/* Tips */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Tips</h3>
+        <p className="text-gray-700">{recipe.tips}</p>
+      </div>
+
+      {/* Nutrition */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Nutrition</h3>
+        <p className="text-gray-700">{recipe.calories} cal</p>
+        <p className="text-gray-700">{recipe.sugar} sugar</p>
+        <p className="text-gray-700">{recipe.fat} fat</p>
+        <p className="text-gray-700">{recipe.carbs} carbs</p>
+        <p className="text-gray-700">{recipe.protine} protine</p>
+      </div>
+
+      {/* Suitable For */}
+      <div className="mt-6">
+        <h3 className="font-bold mb-2 text-black">Suitable For</h3>
+        <p className="text-gray-700">{recipe.suitable_for}</p>
+      </div>
+
+      {/* Likes & Dislikes */}
+      <div className="mt-6 flex flex-wrap gap-4">
+        <div className="flex items-center gap-2 text-green-600 font-bold">
+          👍 {recipe.likes || 0} Likes
+        </div>
+        <div className="flex items-center gap-2 text-red-600 font-bold">
+          👎 {recipe.dislikes || 0} Dislikes
+        </div>
       </div>
     </div>
-  </motion.div>
+  </div>
 </section>
+
 
   )
 }

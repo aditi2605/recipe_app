@@ -28,7 +28,7 @@ export default function Dashboard( ) {
   }
 
   const handleClearSearch = () => {
-    setSearchInput('')
+    setSearchInput("")
   }
 
 
@@ -78,8 +78,9 @@ export default function Dashboard( ) {
 
     const [filters, setFilters] = useState({
         vegan: false,
-        veg: false,
-        glutenFree: false,
+        vegetarian: false,
+        nonveg:false,
+        glutenfree: false,
     })
 
     const handleToggle = (type) => {
@@ -100,16 +101,20 @@ export default function Dashboard( ) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Header */}     
+        {selectedView === 'dashboard' && (
           <motion.div layout className="flex flex-col items-center justify-start bg-amber-50 px-4 pt-4">
-             {/* bg image */}
-            {/* <div className="absolute inset-0 z-0">
-              <img
-                src="/images/color_drop_effect.jpg"
-                alt="Background decoration"
-                className="w-full h-96 object-cover opacity-30"
-              />
-            </div> */}
-            <Header handleViewRecipe={handleViewRecipe} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <Header handleViewRecipe={handleViewRecipe} searchQuery={searchQuery} setSearchQuery={setSearchQuery} 
+              handleSearchSubmit={(value) => {
+                setSearchQuery(value)
+                setSelectedCuisine("")
+                setFilters({
+                  vegan: false,
+                  vegetarian: false,
+                  nonveg: false,
+                  glutenfree: false
+                })
+              }} 
+            />
 
             {/* Toast message */}         
             <AnimatePresence mode="wait">
@@ -150,8 +155,15 @@ export default function Dashboard( ) {
                   ].map((label, index) => (
                     <li
                       key={index}
-                      onClick={() => setSelectedCuisine(label.trim().split(' ')[2])}
-                      className="min-w-max bg-amber-200 px-5 py-2 text-pink-400 text-lg shadow-xl md:text-base font-medium rounded-full hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                      onClick={() => {setSelectedCuisine(label.trim().split(' ')[2]); setSearchQuery("");
+                      setFilters({
+                        vegan: false,
+                        vegetarian: false,
+                        nonveg: false,
+                        glutenfree: false
+                      });
+                    }}
+                      className="min-w-max bg-amber-200 px-5 py-2 text-pink-400 text-lg md:text-base font-medium rounded-full hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap"
                     >
                       {label}
                     </li>
@@ -159,7 +171,6 @@ export default function Dashboard( ) {
                 </ul>
               </div>
             </motion.div>
-
             {/* suitable_for */}
             <div className="flex justify-center flex-col gap-4 mx-4 my-8">
               <div className="flex flex-row gap-6">
@@ -178,8 +189,8 @@ export default function Dashboard( ) {
                   <label className="relative cursor-pointer flex flex-row gap-1 text-pink-500">
                   <input
                       type="checkbox"
-                      checked={filters.veg}
-                      onChange={() => handleToggle('veg')}
+                      checked={filters.vegetarian}
+                      onChange={() => handleToggle('vegetarian')}
                       className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-amber-200 peer-checked:bg-green-800 rounded-full transition-all duration-300"></div>
@@ -187,11 +198,23 @@ export default function Dashboard( ) {
                   Veg
                   </label>
 
+                   <label className="relative cursor-pointer flex flex-row gap-1 text-pink-500">
+                  <input
+                      type="checkbox"
+                      checked={filters.nonveg}
+                      onChange={() => handleToggle('nonveg')}
+                      className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-amber-200 peer-checked:bg-green-800 rounded-full transition-all duration-300"></div>
+                  <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform duration-300"></div>
+                  Non-Veg
+                  </label>
+
                   <label className="relative cursor-pointer flex flex-row gap-1 text-pink-500">
                   <input
                       type="checkbox"
-                      checked={filters.glutenFree}
-                      onChange={() => handleToggle('glutenFree')}
+                      checked={filters.glutenfree}
+                      onChange={() => handleToggle('glutenfree')}
                       className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-amber-200 peer-checked:bg-green-800 rounded-full transition-all duration-300"></div>
@@ -202,13 +225,10 @@ export default function Dashboard( ) {
             </div>
      
           </motion.div>
+         )}
 
-         
-         
-
-          {/* Content Area */}  
-            <div className="flex-1 overflow-y-auto px-6 pb-10">
-
+          {/* Content Area */}          
+            <div className="flex-1 overflow-y-auto  pb-10">
               {/* searched recipes */}
               {searchQuery && (
                 <SearchedRecipe
@@ -241,8 +261,9 @@ export default function Dashboard( ) {
               {selectedView === 'viewRecipe' && (
                 <ViewRecipe recipeId={selectedRecipeId} setSelectedView={setSelectedView} />
               )}
+            
             </div>
-          
+     
       </div>
     </div>
   )

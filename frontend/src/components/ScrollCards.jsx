@@ -70,6 +70,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
                     <div className="flex space-x-4">
                         {Array.isArray(recipes) && recipes.map((item) => (
+                            item.tag === 'recommended' ? (
                             <motion.div
                                 key={item.id}
                                 whileHover={{ scale: 1.03 }}
@@ -92,7 +93,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
 
                                     {/* Cooking Time */}
                                     <div className="absolute top-3 right-3 bg-white text-[#FF6B6B] text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
-                                    ⏱ {item.cooking_time}
+                                    ⏱ {item.cooking_time} min
                                     </div>
                                 </div>
 
@@ -102,12 +103,12 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
 
                                     <div className='flex flex-row justify-between'>
                                         {/* Cuisine */}
-                                        <span className="inline-block text-xs bg-red-100 text-[#FF6B6B] px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md bg-red-100 text-[#FF6B6B] px-4 py-2 rounded-full mt-1">
                                         🍽 {item.cuisine}
                                         </span>
 
                                         {/* SuitableFor */}
-                                        <span className="inline-block text-xs bg-red-100 text-[#FF6B6B] px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md bg-red-100 text-[#FF6B6B] px-4 py-2 rounded-full mt-1">
                                         🍽 {item.suitable_for}
                                         </span>
                                     </div>
@@ -116,7 +117,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                                     <div className="flex justify-between items-center mt-4">
                                     <button
                                         onClick={() => onViewRecipe(item.id)}
-                                        className="px-4 py-2 bg-[#FF9F1C] text-white text-sm rounded-full hover:bg-green-700 transition"
+                                        className="px-4 py-2 bg-[#FF9F1C] text-white text-md rounded-full hover:bg-green-700 transition"
                                     >
                                         View Recipe
                                     </button>
@@ -132,7 +133,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                                     </div>
                                 </div>
                             </motion.div>
-
+                            ) : null
                         ))}
                     </div>
                 </div>
@@ -140,10 +141,11 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
 
             {/* Trending Recipes */}
             <section>
-                <h2 className="text-2xl font-bold text-pink-500 mb-4">Trending Recipes 📸</h2>
+                <h2 className="text-2xl font-bold text-pink-700 mb-4">Trending Recipes 📸</h2>
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
                     <div className="flex space-x-4">
                           {Array.isArray(recipes) && recipes.map((item) => (
+                            item.tag === 'trending' ? (
                             <motion.div
                                 key={item.id}
                                 whileHover={{ scale: 1.03 }}
@@ -160,29 +162,29 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                                     />
 
                                     {/* Tag */}
-                                    <div className="absolute top-3 left-3 bg-amber-300 text-pink-500 text-xs px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+                                    <div className="absolute top-3 left-3 bg-amber-300 text-pink-700 text-xs px-3 py-1 rounded-full shadow-md flex items-center gap-1">
                                      📸 Trending
                                     </div>
 
                                     {/* Cooking Time */}
-                                    <div className="absolute top-3 right-3 bg-white text-pink-500 text-xs px-2 py-1 rounded-full shadow flex items-center gap-1">
+                                    <div className="absolute top-3 right-3 bg-white text-pink-700 text-xs px-2 py-1 rounded-full shadow flex items-center gap-1">
                                     ⏱ {item.cooking_time}
                                     </div>
                                 </div>
 
                                 {/* Content */}
                                 <div className="p-4 space-y-1 relative">
-                                    <h3 className="text-xl font-bold text-pink-500">{item.title}</h3>
+                                    <h3 className="text-xl font-bold text-green-800">{item.title}</h3>
                                     
                                       <div className='flex flex-row justify-between'>
 
                                         {/* Cuisine */}
-                                        <span className="inline-block text-xs bg-pink-500 text-amber-300 px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md bg-pink-700 text-white px-4 py-2 rounded-full mt-1">
                                         🍽 {item.cuisine}
                                         </span>
 
                                         {/* SuitableFor */}
-                                        <span className="inline-block text-xs bg-pink-500 text-amber-300 px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md bg-pink-700 text-white px-4 py-2 rounded-full mt-1">
                                         🍽 {item.suitable_for}
                                         </span>
                                     </div>
@@ -191,7 +193,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                                     <div className="flex justify-between items-center mt-4">
                                     <button
                                         onClick={() => onViewRecipe(item.id)}
-                                        className="px-4 py-2 bg-green-800 text-pink-500 text-sm rounded-full hover:bg-green-700 transition"
+                                        className="px-4 py-2 bg-green-800 text-white text-md rounded-full hover:bg-pink-700 transition"
                                     >
                                         View Recipe
                                     </button>
@@ -207,6 +209,7 @@ export default function ScrollCards({ onViewRecipe, handleAddToFavorites , favou
                                     </div>
                                 </div>
                             </motion.div>
+                            ): null
                         ))}
                     </div>
                 </div>

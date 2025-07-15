@@ -32,15 +32,15 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
                 if (response.ok){
                     const data = await response.json()
                     console.log("header username:", data)
-                    setSearchRecipe(data)
-                    setHasSearched(true)
-
-                    if(typeof onClearSearch === 'function'){
-                        onClearSearch()
-                    }
+                    setSearchRecipe(data)   
+                }else {
+                    setSearchRecipe([])
                 }
             } catch(err){
-                console.error('Faield to fetch username', err)
+                console.error('Faield to find searched item', err)
+                setSearchRecipe([])
+            }finally {
+                setHasSearched(true)
             }
         }
         fetchSearchedRecipes()
@@ -48,10 +48,10 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
     }, [title, onClearSearch])
     
     return (
-          <div className="w-full space-y-16">
+          <div className="w-full px-4 md:px-10 space-y-16">
            <section>
             {hasSearched ? (
-                searchRecipe.length > 0 ? (
+                Array.isArray(searchRecipe) && searchRecipe.length > 0 ? (
                     <>
                         <h2 className='text-2xl text-green-800 mb-4 font-bold'>🔍 {title} Reciepes </h2>
                         <div className="overflow-x-auto pb-4 hide-scrollbar">
@@ -73,7 +73,7 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
                                     />
                             
                                     {/* Cooking Time */}
-                                    <div className="absolute top-3 right-3 bg-green-800 text-pink-400 text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
+                                    <div className="absolute top-3 right-3 bg-green-800 textwhite text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
                                         ⏱ {item.cooking_time}
                                     </div>
                                 </div>
@@ -84,12 +84,12 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
                             
                                     <div className='flex flex-row justify-between'>
                                         {/* Cuisine */}
-                                        <span className="inline-block text-xs text-bold bg-green-800 text-pink-400 px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md text-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                                             🍽 {item.cuisine}
                                         </span>
                             
                                         {/* SuitableFor */}
-                                        <span className="inline-block text-xs text-bold bg-green-800 text-pink-400 px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block text-md text-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                                             🍽 {item.suitable_for}
                                         </span>
                                     </div>
@@ -98,7 +98,7 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
                                     <div className="flex justify-between items-center mt-4">
                                         <button
                                             onClick={() => onViewRecipe(item.id)}
-                                            className="px-4 py-2 bg-green-800 text-pink-400 text-sm rounded-full hover:bg-green-700 transition"
+                                            className="px-4 py-2 bg-green-800 text-white text-md rounded-full hover:bg-green-700 transition"
                                         >
                                             View Recipe
                                         </button>

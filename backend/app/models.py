@@ -13,8 +13,12 @@ class Recipe(Base):
     cuisine = Column(String, index=True)
     ingredients = Column(String, index=True)
     instructions = Column(String, index=True)
-    nutrition = Column(String, index=True)
-    cooking_time = Column(String, index=True)
+    calories = Column(Integer, default=0)
+    fat = Column(Integer, default=0)
+    sugar = Column(Integer, default=0)
+    protine = Column(Integer, default=0)
+    carbs = Column(Integer, default=0)
+    cooking_time = Column(Integer, default=0)
     cooking_method = Column(String, index=True)
     difficulty = Column(String, index=True)
     origin = Column(String, index=True)
@@ -23,6 +27,7 @@ class Recipe(Base):
     likes = Column(Integer, default=0)
     dislikes = Column(Integer, default=0)
     serves = Column(Integer, index=True)
+    tag = Column(String, index=True)
     image = Column(String, index=True) 
 
 

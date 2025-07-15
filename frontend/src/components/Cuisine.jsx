@@ -41,11 +41,11 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
   }, [selectedCuisine])
 
   return (
-    <div className="w-full space-6-16">
+    <div className="w-full px-4 md:px-10 space-y-16">
       <section>
         {selectedCuisine && recipes.length > 0 ? (
           <>
-            <h2 className="text-xl text-fuchsia-700 font-bold mb-4">
+            <h2 className="text-xl text-green-800 font-bold mb-4">
               Showing {selectedCuisine} recipes
             </h2>
             <div className="overflow-x-auto pb-4 hide-scrollbar">
@@ -54,7 +54,7 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
                   <motion.div
                     key={item.id}
                     whileHover={{ scale: 1.03 }}
-                    className="min-w-[280px] md:min-w-[320px] bg-white/80 backdrop-blur-lg border border-fuchsia-800 rounded-3xl transition-transform duration-300 relative overflow-hidden group"
+                    className="min-w-[280px] md:min-w-[320px] bg-white/80 backdrop-blur-lg border border-green-800 rounded-3xl transition-transform duration-300 relative overflow-hidden group"
                   >
                     {/* Recipe Image */}
                     <div className="relative w-full h-56 sm:h-64">
@@ -67,23 +67,23 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
                       />
 
                       {/* Cooking Time */}
-                      <div className="absolute top-3 right-3 bg-green-500 text-fuchsia-800 text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
+                      <div className="absolute top-3 right-3 bg-green-800 text-white text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
                         ⏱ {item.cooking_time}
                       </div>
                     </div>
 
                     {/* Content */}
                     <div className="p-4 space-y-1 relative">
-                      <h3 className="text-xl font-bold text-fuchsia-800">{item.title}</h3>
+                      <h3 className="text-xl font-bold text-green-800">{item.title}</h3>
 
                       <div className="flex flex-row justify-between">
                         {/* Cuisine */}
-                        <span className="inline-block text-xs font-bold bg-green-500 text-fuchsia-800 px-2 py-1 rounded-full mt-1">
+                        <span className="inline-block text-md font-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                           🍽 {item.cuisine}
                         </span>
 
                         {/* SuitableFor */}
-                        <span className="inline-block text-xs font-bold bg-green-500 text-fuchsia-800 px-2 py-1 rounded-full mt-1">
+                        <span className="inline-block text-md font-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                           🍽 {item.suitable_for}
                         </span>
                       </div>
@@ -92,7 +92,7 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
                       <div className="flex justify-between items-center mt-4">
                         <button
                           onClick={() => onViewRecipe(item.id)}
-                          className="px-4 py-2 bg-green-500 text-fuchsia-800 text-sm rounded-full hover:bg-pink-400 transition"
+                          className="px-4 py-2 bg-green-800 bg-green-800 text-white text-md rounded-full hover:bg-pink-400 transition"
                         >
                           View Recipe
                         </button>

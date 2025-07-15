@@ -45,7 +45,7 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
     
     return (
         <>
-            <div className="w-full space-y-16">
+            <div className="w-full px-4 md:px-10 space-y-16">
                 <section>
                     {hasSelected ? (
                         recipes.length > 0 ? (
@@ -70,7 +70,7 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
                                         />
                                 
                                         {/* Cooking Time */}
-                                        <div className="absolute top-3 right-3 bg-green-800 text-pink-400 text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
+                                        <div className="absolute top-3 right-3 bg-green-800 text-white text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
                                             ⏱ {item.cooking_time}
                                         </div>
                                     </div>
@@ -81,12 +81,12 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
                                 
                                         <div className='flex flex-row justify-between'>
                                             {/* Cuisine */}
-                                            <span className="inline-block text-xs text-bold bg-green-800 text-pink-400 px-2 py-1 rounded-full mt-1">
+                                            <span className="inline-block text-md text-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                                                 🍽 {item.cuisine}
                                             </span>
                                 
                                             {/* SuitableFor */}
-                                            <span className="inline-block text-xs text-bold bg-green-800 text-pink-400 px-2 py-1 rounded-full mt-1">
+                                            <span className="inline-block text-md text-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
                                                 🍽 {item.suitable_for}
                                             </span>
                                         </div>
@@ -95,7 +95,7 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
                                         <div className="flex justify-between items-center mt-4">
                                             <button
                                                 onClick={() => onViewRecipe(item.id)}
-                                                className="px-4 py-2 bg-green-800 text-pink-400 text-sm rounded-full hover:bg-green-700 transition"
+                                                className="px-4 py-2 bg-green-800 text-white text-md rounded-full hover:bg-green-700 transition"
                                             >
                                                 View Recipe
                                             </button>
