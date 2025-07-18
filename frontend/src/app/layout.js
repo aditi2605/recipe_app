@@ -19,8 +19,11 @@ const chewy = Chewy({
 });
 
 export const metadata = {
-  title: "My Recipes",
+  title: "BiteCult",
   description: "Discover Flavors from Every Corner of the World",
+   icons: {
+    icon: "/images/bite_cult_logo.png", 
+  },
 };
 
 export default function RootLayout({ children }) {
