@@ -71,19 +71,42 @@ export default function Favorites({ onViewRecipe}) {
                     objectFit="cover"
                     className="rounded-t-3xl"
                   />
+
+                   {/* Cooking Time */}
+                      <div className="absolute top-3 left-3 bg-red-100 text-[#FF6B6B] text-sm font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
+                        ⏱ {item.cooking_time} min
+                      </div>
                   <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black/60 to-transparent rounded-b-3xl" />
                 </div>
 
                 <div className="p-4 space-y-2">
-                  <h3 className="text-xl font-semibold text-green-800">{item.title}</h3>
-                  <p className="text-sm text-gray-500">Delicious and easy to cook at home!</p>
+                  <h3 className="text-xl font-semibold text-[#FF6B6B]">{item.title}</h3>
+                  <div className='flex flex-row justify-between'>
+                      {/* Cuisine */}
+                      <span className="inline-block text-sm bg-red-100 text-[#FF6B6B] px-4 py-2 rounded-full mt-1">
+                          🍽 {item.origin}
+                      </span>
+
+                      {/* SuitableFor */}
+                      <span className="inline-block text-sm bg-red-100 text-[#FF6B6B] px-4 py-2 rounded-full mt-1">
+                          🍽 {item.suitable_for}
+                      </span>
+                  </div>
+
+                  {/* recipeby tag */}
+                  {item.username && (
+                      <div className="absolute top-3 right-3 bg-red-700 border border-white rounded-lg text-white text-md font-extrabold px-4 py-2 shadow-lg">
+                          RecipeBy : {item.username}
+                      </div>
+                  )}
+
 
                   <div className="flex justify-between items-center mt-4">
                     <button
-                      onClick={() => onViewRecipe(item.id)}
-                      className="px-4 py-2 bg-green-600 text-white rounded-full text-sm hover:bg-green-700 transition"
+                        onClick={() => onViewRecipe(item.id)}
+                        className="px-4 py-2 bg-[#FF9F1C] text-white text-md rounded-full hover:bg-green-700 transition"
                     >
-                      View Recipe
+                        View Recipe
                     </button>
                     <button onClick={() => removeUnfavorites(item.id)}>
                       <Trash className='w-5 h-5 text-red-600 hover:text-red-700' />

@@ -10,7 +10,7 @@ class Recipe(Base):
     suitable_for = Column(String, index=True)
     allergens = Column(String, index=True)
     category = Column(String, index=True)
-    cuisine = Column(String, index=True)
+    # cuisine = Column(String, index=True)
     ingredients = Column(String, index=True)
     instructions = Column(String, index=True)
     calories = Column(Integer, default=0)
@@ -29,8 +29,13 @@ class Recipe(Base):
     serves = Column(Integer, index=True)
     tag = Column(String, index=True)
     image = Column(String, index=True) 
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    creator = relationship("Users", back_populates="recipes")
 
-
+    @property
+    def username(self):
+        return self.creator.username if self.creator else None
+    
 class Users(Base):
     __tablename__  = 'users'
 
@@ -39,7 +44,9 @@ class Users(Base):
     email = Column(String, unique=True, index=True)
     password  = Column(String)
 
+    image = Column(String(255), nullable=True)
     favorites = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+    recipes = relationship("Recipe", back_populates="creator")
 
 
 class Favorite(Base):
@@ -51,4 +58,5 @@ class Favorite(Base):
 
     user = relationship("Users", back_populates="favorites")
     recipe = relationship("Recipe")
+
 

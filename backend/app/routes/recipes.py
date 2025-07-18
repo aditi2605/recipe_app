@@ -2,10 +2,11 @@ import shutil
 import os
 import uuid
 from fastapi import APIRouter, Depends, Query, HTTPException, UploadFile, File, Form
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import SessionLocal
-from app.models import Recipe
-from app.schemas import RecipeRead, RecipeCreate
+from app.models import Recipe, Users
+from app.routes.auth import get_current_user
+from app.schemas import RecipeRead, RecipeCreate, RecipeUpdate
 from sqlalchemy import func, or_
 from typing import List
 
@@ -56,12 +57,20 @@ def get_recipes_by_suitable_for(suitable_for: List[str] = Query(...), db: Sessio
     return [RecipeRead.model_validate(recipe).model_dump() for recipe in recipes]
 
 #get recipes search by cuisine (indian, greek, asian, italian)
-@router.get("/recipes/searchbycuisine/{cuisine}", response_model=list[RecipeRead])
-def get_recipes_by_cusine(cuisine:str, db: Session = Depends(get_db)):
-    cuisine_recipes = db.query(Recipe).filter(func.lower(Recipe.cuisine) == cuisine.lower()).all()
-    if not cuisine_recipes:
-        raise HTTPException(status_code=404, detail='cusine recipe not found')
-    return [RecipeRead.model_validate(cuisines).model_dump() for cuisines in cuisine_recipes]
+@router.get("/recipes/searchbycuisine/{origin}", response_model=list[RecipeRead])
+def get_recipes_by_cuisine(origin: str, db: Session = Depends(get_db)):
+    
+    pattern = f"%{origin.strip().lower()}%"
+    print("pattern:", pattern)
+    origin_recipes = (
+        db.query(Recipe)
+        .filter(func.lower(Recipe.origin).ilike(pattern))
+        .all()
+    )
+    if not origin_recipes:
+        raise HTTPException(status_code=404, detail="cuisine recipe not found")
+    return [RecipeRead.model_validate(r).model_dump() for r in origin_recipes]
+
 
 
 #get recipes by allergens
@@ -89,7 +98,7 @@ async def create_recipe(
     cooking_time: int = Form(...),
     allergens: str = Form(...),
     category: str = Form(...),
-    cuisine: str = Form(...),
+    # cuisine: str = Form(...),
     ingredients: str = Form(...),
     instructions: str = Form(...),
     calories: int = Form(...),
@@ -105,7 +114,8 @@ async def create_recipe(
     serves: int = Form(...),
     tag: str = Form(...),
     image: UploadFile = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
 ):
     filename = f"{uuid.uuid4().hex}_{image.filename}"
     file_path = os.path.join(UPLOAD_DIR, filename)
@@ -120,7 +130,7 @@ async def create_recipe(
         instructions=instructions,
         allergens=allergens,
         category=category,
-        cuisine=cuisine,
+        # cuisine=cuisine,
         ingredients=ingredients,
         calories=calories,
         fat=fat,
@@ -134,7 +144,8 @@ async def create_recipe(
         substitution=substitution,
         tag=tag,
         serves=serves,
-        image=filename
+        image=filename,
+        user_id=current_user.id,
     )
 
     db.add(new_recipe)
@@ -149,6 +160,61 @@ async def create_recipe(
 #     db.refresh(new_recipe)
 #     return new_recipe
 
+
+# users created recipes
+@router.post("/myrecipes", response_model=list[RecipeRead])
+def user_create_recipes(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    recipes = db.query(Recipe).filter(Recipe.user_id == current_user.id).all()
+    print(recipes)
+    if not recipes:
+        raise HTTPException(status_code=404, detail="No created recipes found")
+    print(recipes)
+    return recipes
+
+# get user created recipes
+@router.get("/myrecipes", response_model=list[RecipeRead])
+def get_user_created_recipes(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    recipes = db.query(Recipe).options(joinedload(Recipe.creator)).filter(Recipe.user_id == current_user.id).all()
+    print(recipes)
+    if not recipes :
+        raise HTTPException(status_code=404, detail="No recipes created yet")
+    return recipes
+
+# update mycreatedrecipe
+@router.put("/myrecipes/{recipe_id}")
+def update_myrecipe(
+    recipe_id: int,
+    recipe_update: RecipeUpdate,  
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    recipe = db.query(Recipe).filter_by(id=recipe_id, user_id=current_user.id).first()
+
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    update_data = recipe_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(recipe, key, value)
+
+    db.commit()
+    db.refresh(recipe)
+    return recipe
+
+
+# delete mycreatedrecipes
+@router.delete("/myrecipes/{recipe_id}", status_code=204)
+def remove_myrecipe(
+    recipe_id: int, 
+    recipe_update: RecipeUpdate,
+    db: Session = Depends(get_db), 
+    current_user: Users = Depends(get_current_user)
+):
+    myrecipe = db.query(Recipe).filter_by(user_id=current_user.id, id=recipe_id).first()
+    if not myrecipe:
+        raise HTTPException(status_code=404, detail="recipe not found")
+    db.delete(myrecipe)
+    db.commit()
 
 # get recipes by id
 @router.get("/recipes/{id}", response_model=RecipeRead)

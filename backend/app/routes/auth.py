@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+import shutil
+import os
+import uuid
+from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Users, Favorite, Recipe
-from app.schemas import UserRead, UsersCreate, FavoriteCreate, FavoriteRead, RecipeRead
+from app.schemas import UserRead, UsersCreate, FavoriteCreate, FavoriteRead, RecipeRead, ProfileImageRead
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.token import create_access_token, verify_token
 
 router = APIRouter()
+UPLOAD_DIR = "uploads"
 
 pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
 
@@ -117,4 +121,33 @@ def get_user_favorites(
     return recipes
 
 
+# post profile image
+@router.post("/profileimage")
+def profileimage (
+     db: Session = Depends(get_db),
+     image: UploadFile = File(...),
+     current_user : Users = Depends(get_current_user)
+):
+    filename = f"{uuid.uuid4().hex}_{image.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+
+        # store file name in db
+        current_user.image = filename
+        db.add(current_user)
+        db.commit()
+        
+        return {"message": "Profile image uploaded", "filename": filename}
     
+
+@router.get("/profileimage", response_model=ProfileImageRead)
+def get_profileimage(
+    db: Session = Depends(get_db),
+    current_user : Users = Depends(get_current_user) 
+):
+    profileImage = db.query(Users).filter(Users.id == current_user.id).first()
+    if not profileImage:
+        raise HTTPException(status_code=404, detail="profileimage not found")
+    return {"id": profileImage.id, "image": profileImage.image}

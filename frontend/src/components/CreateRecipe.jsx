@@ -3,9 +3,12 @@
 import { useState, useMemo } from 'react'
 import Select from 'react-select'
 import countryList from 'react-select-country-list'
-import Input from './Input'
+import { useRouter } from 'next/navigation'
 
 export default function CreateRecipe() {
+
+  const router = useRouter()
+
   const [recipename, setRecipename] = useState('')
   const [cookingtime, setCookingtime] = useState('')
   const [cuisine, setCuisine] = useState('')
@@ -26,11 +29,12 @@ export default function CreateRecipe() {
   const [origin, setOrigin] = useState('')
   const [substitution, setSubstitution] = useState([])
   const [imageFile, setImageFile] = useState(null)
+  const [tags, setTags] = useState('')
 
   const options = useMemo(() => countryList().getData(), [])
 
   const changeHandler = value => {
-    setOrigin(value.label) // store country name
+    setOrigin(value.label) // store country names
   }
 
   const handleImageChange = (e) => {
@@ -49,7 +53,7 @@ export default function CreateRecipe() {
     formData.append('instructions', instructions)
     formData.append('ingredients', ingredients)
     formData.append('cooking_time', cookingtime)
-    formData.append('cuisine', cuisine)
+    // formData.append('cuisine', cuisine)
     formData.append('serves', serves)
     formData.append('suitable_for', suitablefor)
     formData.append('category', category)
@@ -60,14 +64,20 @@ export default function CreateRecipe() {
     formData.append('carbs', carbs)
     formData.append('allergens', allergens)
     formData.append('image', imageFile)
+    formData.append('tag', tags)
 
     try {
+
+      const token = localStorage.getItem('token')
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`, {
         method: 'POST',
+        headers: { 'Authorization' : `Bearer ${token}`},
         body: formData,
       })
+
       const data = await response.json()
       console.log("Created:", data)
+      router.push('/dashboard')
     } catch (err) {
       console.error("Failed to create recipe", err)
     }
@@ -79,18 +89,19 @@ export default function CreateRecipe() {
 
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto rounded-3xl shadow-2xl p-10 mt-12 border border-[#FF6B6B]"
+        className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 bg-white rounded-3xl shadow-2xl p-10 mt-12 border border-[#FF6B6B]"
       >
         {/* Basic Info */}
-
-          {/* recipe name */}
-          <Input label="Recipe Name" value={recipename} onChange={(e) => setRecipename(e.target.value)} className='text-black' required/>
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B]">Basic Info</h3>
         
-        {/* select cuisine from  */}
+        <input  placeholder='Recipe Name' value={recipename} onChange={(e) => setRecipename(e.target.value)} className="text-black border border-amber-300 p-2 shadow-md rounded-xl" required />
+        
+     
+
         {/* <select
           value={cuisine}
           onChange={(e) => setCuisine(e.target.value)}
-          className="block w-full p-2 border border-amber-200 shadow-md rounded text-black"
+          className="w-full p-2 border border-amber-200 shadow-md rounded text-black"
           required
         >
           <option value="">Select Cuisine</option>
@@ -101,11 +112,10 @@ export default function CreateRecipe() {
           <option value="French">French</option>
         </select> */}
 
-        {/* allergens */}
         <select
           value={allergens}
           onChange={(e) => setAllergens(e.target.value)}
-          className="block w-full p-2 rounded border border-amber-200 shadow-md rounded text-black"
+          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
         >
           <option value="">Select Allergen</option>
           <option value="Soya">Soya</option>
@@ -113,13 +123,13 @@ export default function CreateRecipe() {
           <option value="Dairy">Dairy</option>
           <option value="Gluten">Gluten</option>
           <option value="Fish">Fish</option>
+          <option value="None">None</option>
         </select>
-        
-        {/* suitable_for */}
+
         <select
           value={suitablefor}
           onChange={(e) => setSuitablefor(e.target.value)}
-          className="block w-full p-2 rounded border border-amber-200 shadow-md rounded text-black"
+          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
           required
         >
           <option value="">Suitable For</option>
@@ -127,33 +137,14 @@ export default function CreateRecipe() {
           <option value="vegetarian">Vegetarian</option>
           <option value="nonveg">Non-Vegetarian</option>
           <option value="glutenfree">Gluten-Free</option>
+          <option value="glutenfree">All</option>
         </select>
 
-        {/* Serves */}
-        <div>
-          <label className="block mb-1 text-black">Serves</label>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setServes(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] rounded text-white">-</button>
-            <span className='text-black'>{serves || 0}</span>
-            <button type="button" onClick={() => setServes(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] rounded text-white">+</button>
-          </div>
-        </div>
-
-        {/* Cooking Time */}
-        <div>
-          <label className="block mb-1 text-black">Cooking Time (minutes)</label>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setCookingtime(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] rounded text-white">-</button>
-            <span className='text-black'>{cookingtime || 0}</span>
-            <button type="button" onClick={() => setCookingtime(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] rounded text-white">+</button>
-          </div>
-        </div>
-
-        {/* Difficulty */}
+        {/* cooking difficulty level */}
         <select
           value={difficulty}
           onChange={(e) => setDiffculty(e.target.value)}
-          className="block w-full p-2 border border-amber-200 rounded shadow-md text-black"
+          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
           required
         >
           <option value="">Select Difficulty</option>
@@ -162,185 +153,175 @@ export default function CreateRecipe() {
           <option value="hard">Hard</option>
         </select>
 
-        {/* Origin */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Origin</label>
-          <div className='border border-amber-200 shadow-md rounded text-black'>
+
+
+        {/* Country Origin */}
+        <div className="sm:col-span-2">
+          <label className="block mb-1 text-black">Country Origin</label>
+          <div className="border border-amber-200 shadow-md rounded-xl text-black">
             <Select options={options} onChange={changeHandler} />
           </div>
-          
         </div>
 
-        {/* Nutrition */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Nutrition</label>
-          <div className="grid grid-cols-2 gap-2 text-black ">
-            
-            <input
-                type='number'
-                value={calories}
-                placeholder='calories'
-                onChange={(e) => setCalories(e.target.value)}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-                required
-              />
-              <input
-                type='number'
-                value={fat}
-                placeholder='fat'
-                onChange={(e) => setFat(e.target.value)}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-                required
-              />
-              <input
-                type='number'
-                value={sugar}
-                placeholder='sugar'
-                onChange={(e) => setSugar(e.target.value)}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-                required
-              />
-              <input
-                type='number'
-                value={carbs}
-                placeholder='carbs'
-                onChange={(e) => setCarbs(e.target.value)}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-                required
-              />
-              <input
-                type='number'
-                value={protine}
-                placeholder='protine'
-                onChange={(e) => setProtine(e.target.value)}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-                required
-              />
-            </div>
-          {/* <div className="grid grid-cols-2 gap-2 text-black ">
-            {['calories', 'fat', 'sugar', 'carbs', 'protein'].map(key => (
-              <input
-                key={key}
-                type="number"
-                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                value={nutrition[key]}
-                onChange={(e) => setNutrition({ ...nutrition, [key]: e.target.value })}
-                className="p-2 border border-amber-200 shadow-md rounded text-black"
-              />
-            ))}
-          </div> */}
+        {/*  Nutrition */}
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Nutrition Info</h3>
+        {[['Calories', calories, setCalories], ['Fat', fat, setFat], ['Sugar', sugar, setSugar], ['Carbs', carbs, setCarbs], ['Protein', protine, setProtine]].map(([label, value, setter]) => (
+          <input
+            key={label}
+            type="number"
+            value={value}
+            placeholder={label}
+            onChange={(e) => setter(e.target.value)}
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+            required
+          />
+        ))}
+
+        {/* tag */}
+         <select
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+        >
+          <option value="">Select Tag</option>
+          <option value="classic">Classic</option>
+          <option value="trending">Trending</option>
+          <option value="healthy">Healthy</option>
+          <option value="Recommended">Recommended</option>
+          <option value="streetfood">Streetfood</option>
+          <option value="chef-choice">Chef-Choice</option>
+          <option value="popular">Popular</option>
+        </select>
+
+        {/* Serves */}
+        <div className="flex flex-col">
+          <label className="text-black mb-1">Serves</label>
+          <div className="flex gap-2 items-center">
+            <button type="button" onClick={() => setServes(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
+            <input type="number" value={serves} readOnly className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
+            <button type="button" onClick={() => setServes(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>
+          </div>
         </div>
 
-        {/* Ingredients */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Ingredients</label>
+        {/* Cooking Time */}
+        <div className="flex flex-col">
+          <label className="text-black mb-1">Cooking Time (minutes)</label>
+          <div className="flex gap-2 items-center">
+            <button type="button" onClick={() => setCookingtime(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
+            <input type="number" value={cookingtime} min="0" onChange={e => {const value = parseInt(e.target.value); if (isNaN(value) || value< 0) { setCookingtime(0)} else { setCookingtime(value)}}} className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
+            <button type="button" onClick={() => setCookingtime(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>
+          </div>
+        </div>
+
+
+        {/* ingredients */}
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Ingredients</h3>
+        <div className="col-span-2 space-y-2">
           {ingredients.map((item, index) => (
-            <div key={index} className="flex gap-2 mb-2">
+            <div key={index} className="flex gap-2">
               <input
                 type="text"
                 value={item}
                 onChange={(e) => {
-                  const updated = [...ingredients]
-                  updated[index] = e.target.value
-                  setIngredients(updated)
+                  const updated = [...ingredients];
+                  updated[index] = e.target.value;
+                  setIngredients(updated);
                 }}
-                className="flex-1 p-2 border rounded text-black"
-                required
+                className="flex-1 p-2 border rounded-xl text-black"
               />
-              <button type="button" onClick={() => setIngredients(ingredients.filter((_, i) => i !== index))} className="px-2 py-1 bg-red rounded">❌</button>
+              <button type="button" onClick={() => setIngredients(ingredients.filter((_, i) => i !== index))} className="bg-red-400 px-2 py-1 rounded-xl">❌</button>
             </div>
           ))}
-          <button type="button" onClick={() => setIngredients([...ingredients, ''])} className="px-4 py-2 bg-[#FF6B6B] text-white rounded">➕ Add Ingredient</button>
+          <button type="button" onClick={() => setIngredients([...ingredients, ''])} className="px-4 py-2 bg-[#FF6B6B] text-white rounded-xl">➕ Add Ingredient</button>
         </div>
 
-        {/* Instructions */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Instructions</label>
-          {instructions.map((step, index) => (
-            <div key={index} className="flex gap-2 mb-2">
+        {/* instructions */}
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Instructions</h3>
+        <div className="col-span-2 space-y-2">
+          {instructions.map((item, index) => (
+            <div key={index} className="flex gap-2">
               <input
                 type="text"
-                value={step}
+                value={item}
                 onChange={(e) => {
-                  const updated = [...instructions]
-                  updated[index] = e.target.value
-                  setInstructions(updated)
+                  const updated = [...instructions];
+                  updated[index] = e.target.value;
+                  setInstructions(updated);
                 }}
-                className="flex-1 p-2 border rounded text-black"
-                required
+                className="flex-1 p-2 border rounded-xl text-black"
               />
-              <button type="button" onClick={() => setInstructions(instructions.filter((_, i) => i !== index))} className="px-2 py-1 bg-red-200 rounded">❌</button>
+              <button type="button" onClick={() => setInstructions(instructions.filter((_, i) => i !== index))} className="bg-red-400 px-2 py-1 rounded">❌</button>
             </div>
           ))}
-          <button type="button" onClick={() => setInstructions([...instructions, ''])} className="px-4 py-2 bg-[#FF6B6B] rounded text-white">➕ Add Step</button>
+          <button type="button" onClick={() => setInstructions([...instructions, ''])} className="px-4 py-2 bg-[#FF6B6B] text-white rounded-xl">➕ Add Instruction</button>
         </div>
 
         {/* Tips */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Tips</label>
-          {tips.map((tip, index) => (
-            <div key={index} className="flex gap-2 mb-2">
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Add Tips</h3>
+        <div className="col-span-2 space-y-2">
+          {tips.map((item, index) => (
+            <div key={index} className="flex gap-2">
               <input
                 type="text"
-                value={tip}
+                value={item}
                 onChange={(e) => {
-                  const updated = [...tips]
-                  updated[index] = e.target.value
-                  setTips(updated)
+                  const updated = [...tips];
+                  updated[index] = e.target.value;
+                  setTips(updated);
                 }}
-                className="flex-1 p-2 border rounded text-black"
-                required
+                className="flex-1 p-2 border rounded-xl text-black"
               />
-              <button type="button" onClick={() => setTips(tips.filter((_, i) => i !== index))} className="px-2 py-1 bg-red-200 rounded">❌</button>
+              <button type="button" onClick={() => setTips(tips.filter((_, i) => i !== index))} className="bg-red-400 px-2 py-1 rounded">❌</button>
             </div>
           ))}
-          <button type="button" onClick={() => setTips([...tips, ''])} className="px-4 py-2 bg-[#FF6B6B] rounded text-white">➕ Add Tip</button>
+          <button type="button" onClick={() => setTips([...tips, ''])} className="px-4 py-2 bg-[#FF6B6B] text-white rounded-xl">➕ Add Tips</button>
         </div>
 
-        {/* Substitution */}
-        <div className="col-span-full">
-          <label className="block mb-1 text-black">Substitution</label>
-          {substitution.map((sub, index) => (
-            <div key={index} className="flex gap-2 mb-2">
+        {/* substitution */}
+        <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Add Substitutions</h3>
+        <div className="col-span-2 space-y-2">
+          {substitution.map((item, index) => (
+            <div key={index} className="flex gap-2">
               <input
                 type="text"
-                value={sub}
+                value={item}
                 onChange={(e) => {
-                  const updated = [...substitution]
-                  updated[index] = e.target.value
-                  setSubstitution(updated)
+                  const updated = [...substitution];
+                  updated[index] = e.target.value;
+                  setSubstitution(updated);
                 }}
-                className="flex-1 p-2 border rounded text-black"
-                required
+                className="flex-1 p-2 border rounded-xl text-black"
               />
-              <button type="button" onClick={() => setSubstitution(substitution.filter((_, i) => i !== index))} className="px-2 py-1 bg-red-200 rounded">❌</button>
+              <button type="button" onClick={() => setSubstitution(substitution.filter((_, i) => i !== index))} className="bg-red-400 px-2 py-1 rounded">❌</button>
             </div>
           ))}
-          <button type="button" onClick={() => setSubstitution([...substitution, ''])} className="px-4 py-2 bg-[#FF6B6B] rounded text-white">➕ Add Substitute</button>
+          <button type="button" onClick={() => setSubstitution([...substitution, ''])} className="px-4 py-2 bg-[#FF6B6B] text-white rounded-xl">➕ Add Substitutions</button>
         </div>
+        
 
         {/* Image Upload */}
-        <div className="col-span-full">
+        <div className="col-span-2">
           <label className="block mb-1 text-black">Image</label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="block w-full p-2 border border-amber-200 shadow-md rounded text-black"
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
             required
           />
         </div>
 
-        {/* Submit */}
-        <div className="col-span-full text-center">
+        {/* Submit btn */}
+        <div className="col-span-2 text-center mt-6">
           <button
             type="submit"
-            className="bg-[#FF6B6B] text-white px-6 py-3 rounded-full hover:bg-green-700"
+            className="bg-[#FF6B6B] text-white px-6 py-3 rounded-full hover:bg-green-700 transition duration-300"
           >
             Submit Recipe
           </button>
         </div>
       </form>
+
     </div>
   )
 }

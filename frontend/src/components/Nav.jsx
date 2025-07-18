@@ -41,6 +41,8 @@ export default function Nav( { trigger }) {
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setLoading(true)
+
     const formData = new URLSearchParams()
     formData.append('username', email.trim())
     formData.append('password', password.trim())
@@ -133,7 +135,11 @@ export default function Nav( { trigger }) {
   //   return () => clearInterval(interval)
   // }, [loading])
 
-
+{loading && (
+  <div className="fixed inset-0 bg-black/70 z-[999] flex items-center justify-center">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#FF6B6B] border-opacity-80" />
+  </div>
+)}
   return (
     <>
       <div ref={containerRef}>
@@ -243,9 +249,7 @@ export default function Nav( { trigger }) {
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  setLoading(true);
-                  await handleLogin(e);
-                  setLoading(false);
+                  await handleLogin(e); 
                 }}
                 className="space-y-4"
               >

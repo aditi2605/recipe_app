@@ -102,100 +102,108 @@ useEffect( () => {
 
   return (
    <section className="flex flex-col items-center px-4 py-8 min-h-screen">
-  <div className="max-w-xl w-full bg-white rounded-3xl shadow-xl overflow-hidden">
-    {/* Recipe Image */}
-    <div className="relative w-full h-96">
-      <Image
-        src={`http://localhost:8000/uploads/${recipe.image}`}
-        alt={recipe.title}
-        fill
-        className="object-cover"
-      />
-      <button
-        onClick={handleRedirect}
-        className="absolute top-4 left-4 bg-[#FF6B6B] rounded-full p-2 shadow"
-      >
-        <X className="w-5 h-5 text-white" />
-      </button>
-    </div>
-
-    {/* Recipe Content */}
-    <div className="p-6">
-      {/* Title & Cuisine */}
-      <div className="flex justify-between items-center mb-2">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">{recipe.title}</h2>
-          <p className="text-gray-500">{recipe.cuisine}</p>
+      <div className="max-w-xl w-full bg-white rounded-3xl shadow-xl overflow-hidden">
+        {/* Recipe Image */}
+        <div className="relative w-full h-96">
+          <Image
+            src={`http://localhost:8000/uploads/${recipe.image}`}
+            alt={recipe.title}
+            fill
+            className="object-cover"
+          />
+          <button
+            onClick={handleRedirect}
+            className="absolute top-4 left-4 bg-[#FF6B6B] rounded-full p-2 shadow"
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
         </div>
-        <div className="flex items-center gap-1 bg-amber-300 text-black px-3 py-1 rounded-full text-sm font-bold shadow-xl">
-          ⭐ {recipe.rating || '4.5'}
+
+        {/* Recipe Content */}
+        <div className="p-6">
+          {/* Title & Cuisine */}
+          <div className="flex justify-between items-center mb-2">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">{recipe.title}</h2>
+              <p className="text-gray-500">{recipe.origin}</p>
+            </div>
+            <div className="flex items-center gap-1 bg-amber-300 text-black px-3 py-1 rounded-full text-sm font-bold shadow-xl">
+              ⭐ {recipe.rating || '4.5'}
+            </div>
+
+          </div>
+
+          {/*  Badges */}
+          <div className="flex flex-wrap gap-1 my-2 text-black justify-center items-center">
+            <InfoBadge className='text-black' icon={<Clock className='w-10 h-8 text-black' />} label={`${recipe.cooking_time} min`} />
+            <InfoBadge icon={<UsersRound className='w-10 h-8 text-black'  />} label={`${recipe.serves} Serving`} />
+            <InfoBadge icon={<Flame className='w-10 h-8 text-black'  />} label={`${recipe.calories} Cal`} />
+            <InfoBadge icon={<Layers className='w-10 h-8 text-black'  />} label={`${recipe.difficulty || 'Easy'}`} />
+          </div>
+
+          {/* Ingredients */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Ingredients</h3>
+            <ul className="list-disc list-inside space-y-1 text-gray-700">
+              {recipe.ingredients.split(',').map((item, idx) => (
+                <li key={idx} dangerouslySetInnerHTML={{ __html: highlightAmount(item) }} />
+              ))}
+            </ul>
+          </div>
+
+          {/* Directions */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Instructions</h3>
+            <p className="text-gray-700">{recipe.instructions}</p>
+          </div>
+
+          {/* Substitute */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Substitute</h3>
+            <p className="text-gray-700">{recipe.substitution}</p>
+          </div>
+
+          {/* Tips */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Tips</h3>
+            <p className="text-gray-700">{recipe.tips}</p>
+          </div>
+
+          {/* Nutrition */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Nutrition</h3>
+            <p className="text-gray-700">{recipe.calories} cal</p>
+            <p className="text-gray-700">{recipe.sugar} sugar</p>
+            <p className="text-gray-700">{recipe.fat} fat</p>
+            <p className="text-gray-700">{recipe.carbs} carbs</p>
+            <p className="text-gray-700">{recipe.protine} protine</p>
+          </div>
+
+          {/* Suitable For */}
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-black">Suitable For</h3>
+            <p className="text-gray-700">{recipe.suitable_for}</p>
+          </div>
+
+          {/* Likes & Dislikes */}
+          <div className="mt-6 flex flex-wrap gap-4">
+            <div className="flex items-center gap-2 text-green-600 font-bold">
+              👍 {recipe.likes || 0} Likes
+            </div>
+            <div className="flex items-center gap-2 text-red-600 font-bold">
+              👎 {recipe.dislikes || 0} Dislikes
+            </div>
+          </div>
+
+           {/* recipeby tag */}
+            {recipe.username && (
+                <div className="absolute bottom-3 right-3 bg-red-700 border border-white rounded-lg text-white text-md font-extrabold px-4 py-2 shadow-lg">
+                    RecipeBy : {recipe.username}
+                </div>
+            )}
         </div>
       </div>
-
-      {/*  Badges */}
-      <div className="flex flex-wrap gap-1 my-2 text-black justify-center items-center">
-        <InfoBadge className='text-black' icon={<Clock className='w-10 h-8 text-black' />} label={`${recipe.cooking_time} min`} />
-        <InfoBadge icon={<UsersRound className='w-10 h-8 text-black'  />} label={`${recipe.serves} Serving`} />
-        <InfoBadge icon={<Flame className='w-10 h-8 text-black'  />} label={`${recipe.calories} Cal`} />
-        <InfoBadge icon={<Layers className='w-10 h-8 text-black'  />} label={`${recipe.difficulty || 'Easy'}`} />
-      </div>
-
-      {/* Ingredients */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Ingredients</h3>
-        <ul className="list-disc list-inside space-y-1 text-gray-700">
-          {recipe.ingredients.split(',').map((item, idx) => (
-            <li key={idx} dangerouslySetInnerHTML={{ __html: highlightAmount(item) }} />
-          ))}
-        </ul>
-      </div>
-
-      {/* Directions */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Instructions</h3>
-        <p className="text-gray-700">{recipe.instructions}</p>
-      </div>
-
-      {/* Substitute */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Substitute</h3>
-        <p className="text-gray-700">{recipe.substitution}</p>
-      </div>
-
-      {/* Tips */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Tips</h3>
-        <p className="text-gray-700">{recipe.tips}</p>
-      </div>
-
-      {/* Nutrition */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Nutrition</h3>
-        <p className="text-gray-700">{recipe.calories} cal</p>
-        <p className="text-gray-700">{recipe.sugar} sugar</p>
-        <p className="text-gray-700">{recipe.fat} fat</p>
-        <p className="text-gray-700">{recipe.carbs} carbs</p>
-        <p className="text-gray-700">{recipe.protine} protine</p>
-      </div>
-
-      {/* Suitable For */}
-      <div className="mt-6">
-        <h3 className="font-bold mb-2 text-black">Suitable For</h3>
-        <p className="text-gray-700">{recipe.suitable_for}</p>
-      </div>
-
-      {/* Likes & Dislikes */}
-      <div className="mt-6 flex flex-wrap gap-4">
-        <div className="flex items-center gap-2 text-green-600 font-bold">
-          👍 {recipe.likes || 0} Likes
-        </div>
-        <div className="flex items-center gap-2 text-red-600 font-bold">
-          👎 {recipe.dislikes || 0} Dislikes
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
   )

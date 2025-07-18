@@ -5,7 +5,7 @@ import Logo from '../../public/images/bite_cult_logo.png'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LayoutDashboard, Heart, PlusCircle, LogOut } from 'lucide-react'
+import { LayoutDashboard, Heart, PlusCircle, LogOut, ScrollText } from 'lucide-react'
 import NavItem from './NavItem'
 
 export default function DashboardSideNav({ onSelect }) {
@@ -23,7 +23,6 @@ export default function DashboardSideNav({ onSelect }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Logo */}
-      {/* logo btn */}
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -60,6 +59,13 @@ export default function DashboardSideNav({ onSelect }) {
           onClick={() => onSelect('addrecipe')}
           icon={<PlusCircle />}
           label="Add Recipe"
+          showLabel={isOpen}
+          className="text-[#F7FFF7]"
+        />
+         <NavItem
+          onClick={() => onSelect('createdRecipes')}
+          icon={<ScrollText/>}
+          label="My Recipes"
           showLabel={isOpen}
           className="text-[#F7FFF7]"
         />

@@ -68,8 +68,15 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
 
                       {/* Cooking Time */}
                       <div className="absolute top-3 right-3 bg-green-800 text-white text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
-                        ⏱ {item.cooking_time}
+                        ⏱ {item.cooking_time} min
                       </div>
+
+                      {/* recipeby tag */}
+                      {item.username && (
+                          <div className="absolute bottom-3 right-3 bg-red-700 border border-white rounded-lg text-white text-md font-extrabold px-4 py-2 shadow-lg">
+                              RecipeBy : {item.username}
+                          </div>
+                      )}
                     </div>
 
                     {/* Content */}
@@ -79,7 +86,7 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
                       <div className="flex flex-row justify-between">
                         {/* Cuisine */}
                         <span className="inline-block text-md font-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
-                          🍽 {item.cuisine}
+                          🍽 {item.origin}
                         </span>
 
                         {/* SuitableFor */}

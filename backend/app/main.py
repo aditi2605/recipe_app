@@ -27,7 +27,25 @@ app.add_middleware(
 app.include_router(recipes.router)
 app.include_router(auth.router)
 
+
 # serve static files from uploads URL
+
+from fastapi import UploadFile, File, HTTPException
+import os, uuid, shutil
+
+@app.post("/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        filename = f"{uuid.uuid4().hex}_{file.filename}"
+        file_path = os.path.join("uploads", filename)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        return {"filename": filename}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 BASE_DIR = Path(__file__).resolve().parent
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 

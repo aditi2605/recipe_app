@@ -68,10 +68,15 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
                                             objectFit="cover"
                                             className="rounded-t-3xl group-hover:scale-105 transition-transform duration-300"
                                         />
+
+                                         {/* Tag */}
+                                        <div className="absolute top-3 left-3 bg-green-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+                                        🌟 {item.suitable_for}
+                                        </div>
                                 
                                         {/* Cooking Time */}
-                                        <div className="absolute top-3 right-3 bg-green-800 text-white text-xs font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1">
-                                            ⏱ {item.cooking_time}
+                                        <div className="absolute top-3 right-3 bg-green-800 text-white text-xs  px-2 py-1 rounded-full shadow flex items-center gap-1">
+                                            ⏱ {item.cooking_time} min
                                         </div>
                                     </div>
                                 
@@ -81,8 +86,8 @@ export default function SuitableFor({ onViewRecipe, filters, favourites }) {
                                 
                                         <div className='flex flex-row justify-between'>
                                             {/* Cuisine */}
-                                            <span className="inline-block text-md text-bold bg-green-800 text-white px-4 py-2 rounded-full mt-1">
-                                                🍽 {item.cuisine}
+                                            <span className="inline-block text-md bg-green-800 text-white px-4 py-2 rounded-full mt-1">
+                                                🍽 {item.origin}
                                             </span>
                                 
                                             {/* SuitableFor */}

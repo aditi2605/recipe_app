@@ -11,6 +11,7 @@ import ViewRecipe from './ViewRecipe'
 import SearchedRecipe from './SearchedRecipe'
 import SuitableFor from './Suitablefor'
 import Cuisine from './Cuisine'
+import CreatedRecipes from './CreatedRecipes'
 
 
 export default function Dashboard( ) {
@@ -25,6 +26,11 @@ export default function Dashboard( ) {
   const handleViewRecipe = (id) => {
     setSelectedRecipeId(id)
     setSelectedView('viewRecipe')
+  }
+
+   const handleCreatedRecipe = (id) => {
+    setSelectedRecipeId(id)
+    setSelectedView('createdRecipes')
   }
 
   const handleClearSearch = () => {
@@ -260,6 +266,9 @@ export default function Dashboard( ) {
               {selectedView === 'addrecipe' && <CreateRecipe />}
               {selectedView === 'viewRecipe' && (
                 <ViewRecipe recipeId={selectedRecipeId} setSelectedView={setSelectedView} />
+              )}
+              {selectedView === 'createdRecipes' && (
+                <CreatedRecipes recipeId={selectedRecipeId} setSelectedView={setSelectedView} onViewRecipe={handleViewRecipe}  handleAddToFavorites={handleAddToFavorites} favourites={favourites} />
               )}
             
             </div>
