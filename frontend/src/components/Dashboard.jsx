@@ -26,15 +26,18 @@ export default function Dashboard( ) {
   const handleViewRecipe = (id) => {
     setSelectedRecipeId(id)
     setSelectedView('viewRecipe')
+    setSearchQuery("")
   }
 
    const handleCreatedRecipe = (id) => {
     setSelectedRecipeId(id)
     setSelectedView('createdRecipes')
+    setSearchQuery("")
   }
 
   const handleClearSearch = () => {
     setSearchInput("")
+    setSearchQuery("")
   }
 
 
@@ -102,7 +105,10 @@ export default function Dashboard( ) {
   return (
     <div className="flex h-screen overflow-hidden bg-amber-50">
       {/* Sidebar */}
-      <DashboardSideNav onSelect={setSelectedView} />
+      <DashboardSideNav onSelect={(view) => {
+        setSelectedView(view)
+        setSearchQuery("")   
+      }} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-y-auto">
