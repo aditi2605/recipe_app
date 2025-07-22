@@ -206,7 +206,7 @@ def update_myrecipe(
 @router.delete("/myrecipes/{recipe_id}", status_code=204)
 def remove_myrecipe(
     recipe_id: int, 
-    recipe_update: RecipeUpdate,
+    # recipe_update: RecipeUpdate,
     db: Session = Depends(get_db), 
     current_user: Users = Depends(get_current_user)
 ):

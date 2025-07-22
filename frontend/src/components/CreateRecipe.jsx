@@ -77,7 +77,8 @@ export default function CreateRecipe() {
 
       const data = await response.json()
       console.log("Created:", data)
-      router.push('/dashboard')
+      router.push('/Dashboard')
+      alert('Recipe has been created successfully 🎉')
     } catch (err) {
       console.error("Failed to create recipe", err)
     }

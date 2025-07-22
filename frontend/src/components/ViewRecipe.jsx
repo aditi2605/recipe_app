@@ -197,7 +197,7 @@ useEffect( () => {
 
            {/* recipeby tag */}
             {recipe.username && (
-                <div className="absolute bottom-3 right-3 bg-red-700 border border-white rounded-lg text-white text-md font-extrabold px-4 py-2 shadow-lg">
+                <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm border border-[#FF6B6B] rounded-lg text-[#FF6B6B] text-md font-extrabold px-4 py-2 shadow-lg">
                     RecipeBy : {recipe.username}
                 </div>
             )}
