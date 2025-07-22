@@ -19,9 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Recipe API!"}
+# @app.get("/")
+# def read_root():
+#     return {"message": "Welcome to the Recipe API!"}
 
 #register routes
 app.include_router(recipes.router)
