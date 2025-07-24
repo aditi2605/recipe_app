@@ -72,7 +72,7 @@ export default function JoinCommunity() {
           </div>
         ))}
         {/* CTA btn */}
-          <Link href='#' className='items-center justify-center bg-green-600 text-white px-6 py-3 rounded-full shadow-md font-bold hover:bg-pink-500 transition'>Join Now!</Link>
+          <Link href='#' className='flex items-center justify-self align-center bg-green-600 text-white px-6 py-3 rounded-full shadow-md font-bold hover:bg-pink-500 transition'>Join Now!</Link>
         
       </div>
     </section>

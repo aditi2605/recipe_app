@@ -14,7 +14,7 @@ export default function Footer() {
             <Image src={Logo} alt="logo" width={80} height={80} className="rounded-full shadow-md" />
           </div>
           <p className="text-md text-gray-700 leading-relaxed">
-            TastyCrave was born out of our shared love for food and the occasional frustration we felt whenever we wanted to try something new.{' '}
+            BiteCult was born out of our shared love for food and the occasional frustration we felt whenever we wanted to try something new.{' '}
             <Link href="#about" className="font-semibold text-[#ff6b6b] hover:text-[#ff9f1c] transition underline">
               Read our story →
             </Link>
@@ -51,7 +51,7 @@ export default function Footer() {
 
       {/* Bottom Note */}
       <div className="mt-12 text-center text-sm text-gray-500 border-t pt-6">
-        © 2025 <span className="font-semibold text-[#ff6b6b]">TastyCrave</span>. All Rights Deliciously Reserved.
+        © 2025 <span className="font-semibold text-[#ff6b6b]">BiteCult</span>. All Rights Deliciously Reserved.
       </div>
     </footer>
   )
