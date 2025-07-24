@@ -106,7 +106,7 @@ useEffect( () => {
         {/* Recipe Image */}
         <div className="relative w-full h-96">
           <Image
-            src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${item.image}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${recipe.image}`}
             // src={`http://localhost:8000/uploads/${recipe.image}`}
             alt={recipe.title}
             fill
