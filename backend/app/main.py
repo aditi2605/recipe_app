@@ -13,7 +13,7 @@ app  = FastAPI()
 origins = [
     "https://bitecult.vercel.app",
     "http://localhost:3000",
-
+    "https://bitecult-backend.onrender.com" ,
 ]
 
 
