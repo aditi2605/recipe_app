@@ -324,7 +324,8 @@ export default function Nav( { trigger }) {
                 <p className="text-sm text-[#333]">
                   Don&apos;t have an account?{' '}
                   <span
-                    onClick={() => setModal(switchToSignup)}
+                    onClick={switchToSignup}
+                    // onClick={() => setModal(switchToSignup)}
                     className="text-[#FF6B6B] font-semibold cursor-pointer hover:underline"
                   >
                     Create one
@@ -334,7 +335,8 @@ export default function Nav( { trigger }) {
                 <p className="text-sm text-[#333]">
                   Already have an account?{' '}
                   <span
-                    onClick={() => setModal(switchToLogin)}
+                    onClick={switchToLogin}
+                    // onClick={() => setModal(switchToLogin)}
                     className="text-[#FF6B6B] font-semibold cursor-pointer hover:underline"
                   >
                     Login
