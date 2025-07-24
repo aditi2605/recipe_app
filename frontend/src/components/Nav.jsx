@@ -135,7 +135,7 @@ export default function Nav({ trigger }) {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg text-black"
                   required
                 />
                 <input
@@ -143,7 +143,7 @@ export default function Nav({ trigger }) {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg text-black"
                   required
                 />
                 <button
@@ -161,7 +161,7 @@ export default function Nav({ trigger }) {
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg text-black"
                   required
                 />
                 <input
@@ -169,7 +169,7 @@ export default function Nav({ trigger }) {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg text-black"
                   required
                 />
                 <input
@@ -177,7 +177,7 @@ export default function Nav({ trigger }) {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg"
+                  className="w-full px-4 py-3 border-2 border-[#FF9F1C] rounded-lg text-black"
                   required
                 />
                 <button

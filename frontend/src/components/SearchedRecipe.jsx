@@ -65,7 +65,8 @@ export default function SearchedRecipe({ title , onClearSearch,  onViewRecipe, h
                                 {/* Recipe Image */}
                                 <div className="relative w-full h-56 sm:h-64">
                                     <Image
-                                        src={`http://localhost:8000/uploads/${item.image}`}
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${item.image}`}
+                                        // src={`http://localhost:8000/uploads/${item.image}`}
                                         alt={item.title}
                                         layout="fill"
                                         objectFit="cover"
