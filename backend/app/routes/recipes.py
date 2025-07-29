@@ -1,6 +1,5 @@
-import shutil
-import os
-import uuid
+import os, uuid, shutil
+from azure.storage.blob import BlobServiceClient
 from fastapi import APIRouter, Depends, Query, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session, joinedload
 from app.database import SessionLocal
@@ -13,6 +12,11 @@ from typing import List
 
 router = APIRouter()
 UPLOAD_DIR = "uploads"
+
+connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+container_name = os.getenv("AZURE_CONTAINER_NAME")
+blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+container_client = blob_service_client.get_container_client(container_name)
 
 def get_db():
     db = SessionLocal()
@@ -113,15 +117,18 @@ async def create_recipe(
     substitution: str = Form(...),
     serves: int = Form(...),
     tag: str = Form(...),
-    image: UploadFile = Form(...),
+    image: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)
 ):
+    # upload to azure
     filename = f"{uuid.uuid4().hex}_{image.filename}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
+    blob_client = container_client.get_blob_client(filename)
+    blob_client.upload_blob(image.file, overwrite=True)
+    # file_path = os.path.join(UPLOAD_DIR, filename)
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+    # with open(file_path, "wb") as buffer:
+    #     shutil.copyfileobj(image.file, buffer)
 
     new_recipe = Recipe(
         title=title,
@@ -184,18 +191,44 @@ def get_user_created_recipes(db: Session = Depends(get_db), current_user: Users 
 @router.put("/myrecipes/{recipe_id}")
 def update_myrecipe(
     recipe_id: int,
-    recipe_update: RecipeUpdate,  
+    title: str = Form(None),
+    image: UploadFile = File(None),
+    # recipe_update: RecipeUpdate,  
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user)
 ):
     recipe = db.query(Recipe).filter_by(id=recipe_id, user_id=current_user.id).first()
-
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
-    update_data = recipe_update.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(recipe, key, value)
+    # update_data = recipe_update.dict(exclude_unset=True)
+    # for key, value in update_data.items():
+    #     setattr(recipe, key, value)
+
+    # Replace image if new one is uploaded
+    if image:
+        old_filename = recipe.image
+        if old_filename:
+            try:
+                container_client.delete_blob(old_filename)
+            except Exception:
+                pass  # fail silently if not found
+
+        new_filename = f"{uuid.uuid4().hex}_{image.filename}"
+        blob_client = container_client.get_blob_client(new_filename)
+        blob_client.upload_blob(image.file, overwrite=True)
+        recipe.image = new_filename
+
+    # Update other fields dynamically
+    for field in [
+        "title", "suitable_for", "cooking_time", "instructions", "allergens", "category",
+        "ingredients", "calories", "fat", "sugar", "protine", "carbs", "cooking_method",
+        "difficulty", "origin", "tips", "substitution", "tag", "serves"
+    ]:
+        value = locals().get(field)
+        if value is not None:
+            setattr(recipe, field, value)
+
 
     db.commit()
     db.refresh(recipe)
@@ -213,6 +246,14 @@ def remove_myrecipe(
     myrecipe = db.query(Recipe).filter_by(user_id=current_user.id, id=recipe_id).first()
     if not myrecipe:
         raise HTTPException(status_code=404, detail="recipe not found")
+    
+    # Delete image from Azure Blob
+    if myrecipe.image:
+        try:
+            container_client.delete_blob(myrecipe.image)
+        except Exception:
+            pass  # ignore if image not found
+        
     db.delete(myrecipe)
     db.commit()
 

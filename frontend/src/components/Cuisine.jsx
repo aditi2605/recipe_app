@@ -59,7 +59,7 @@ export default function Cuisine({ title, onViewRecipe, handleAddToFavorites, fav
                     {/* Recipe Image */}
                     <div className="relative w-full h-56 sm:h-64">
                       <Image
-                        src={`http://localhost:8000/uploads/${item.image}`}
+                        src={`https://bitecultstorage.blob.core.windows.net/uploads/${item.image}`}
                         alt={item.title}
                         layout="fill"
                         objectFit="cover"
