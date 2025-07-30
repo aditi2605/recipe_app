@@ -55,3 +55,4 @@ Database: PostgreSQL (Render)
 `![Dashboard](screenshots/dashboard.png)`
 
 ## Live Demo
+Check out the live app here: [Live Demo](https://bitecult.vercel.app/)
