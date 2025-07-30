@@ -15,6 +15,13 @@ UPLOAD_DIR = "uploads"
 
 connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 container_name = os.getenv("AZURE_CONTAINER_NAME")
+
+if not connect_str:
+    raise Exception("Missing AZURE_STORAGE_CONNECTION_STRING")
+if not container_name:
+    raise Exception("Missing AZURE_CONTAINER_NAME")
+
+
 blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_client = blob_service_client.get_container_client(container_name)
 
