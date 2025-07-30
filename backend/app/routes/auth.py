@@ -9,6 +9,8 @@ from app.schemas import UserRead, UsersCreate, FavoriteCreate, FavoriteRead, Rec
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.token import create_access_token, verify_token
+from azure.storage.blob import BlobServiceClient
+
 
 router = APIRouter()
 UPLOAD_DIR = "uploads"
@@ -17,6 +19,12 @@ pwd_context = CryptContext(schemes = ["bcrypt"], deprecated = "auto")
 
 # Tells FastAPI to expect a Bearer token from the Authorization header
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+
+connect_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+container_name = os.getenv("AZURE_CONTAINER_NAME")
+
+blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+container_client = blob_service_client.get_container_client(container_name)
 
 def get_db():
     db = SessionLocal()
@@ -128,18 +136,25 @@ def profileimage (
      image: UploadFile = File(...),
      current_user : Users = Depends(get_current_user)
 ):
-    filename = f"{uuid.uuid4().hex}_{image.filename}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
+     filename = f"{uuid.uuid4().hex}_{image.filename}"
+     blob_client = container_client.get_blob_client(filename)
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
+     try:
+       blob_client.upload_blob(image.file, overwrite=True)
+     except Exception as e:
+       raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+    
+    # file_path = os.path.join(UPLOAD_DIR, filename)
 
-        # store file name in db
-        current_user.image = filename
-        db.add(current_user)
-        db.commit()
+    # with open(file_path, "wb") as buffer:
+    #     shutil.copyfileobj(image.file, buffer)
+
+    # store file name in db
+     current_user.image = filename
+     db.add(current_user)
+     db.commit()
         
-        return {"message": "Profile image uploaded", "filename": filename}
+     return {"message": "Profile image uploaded", "filename": filename}
     
 
 @router.get("/profileimage", response_model=ProfileImageRead)

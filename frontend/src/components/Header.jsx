@@ -12,7 +12,8 @@ export default function Header({ handleSearchSubmit, handleViewRecipe, handleAdd
     const [userName, setUserName] = useState("")
     const [profileCard, setProfileCard] = useState(false)
     const [profileImage, setProfileImage] = useState('/images/profile_img.jpg')
-    const [profileImageUrl, setProfileImageUrl] = useState('/images/profile_img.jpg')
+    // const [profileImageUrl, setProfileImageUrl] = useState('/images/profile_img.jpg')
+    const AZURE_BLOB_URL = "https://bitecultstorage.blob.core.windows.net/uploads";
     
 
     const closeModal = () => {
@@ -56,7 +57,7 @@ export default function Header({ handleSearchSubmit, handleViewRecipe, handleAdd
                     console.log("profileimage:", data)
 
                      if (data.image){
-                        const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${data.image}`;
+                        const imageUrl = `${AZURE_BLOB_URL}/${data.image}`;
                         setProfileImage(imageUrl)
                     } else {
                         fetchProfileImage()
@@ -95,8 +96,8 @@ export default function Header({ handleSearchSubmit, handleViewRecipe, handleAdd
                  const data = await response.json()
                  console.log("profile photo uploaded", data)
 
-                 if (data.image) {
-                    const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${data.image}?t=${Date.now()}`
+                 if (data.filename) {
+                    const imageUrl = `${AZURE_BLOB_URL}${data.filename}?t=${Date.now()}`
                     setProfileImage(imageUrl)
                  } else {
                     setTimeout(() => fetchProfileImage(), 1000)
