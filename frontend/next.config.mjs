@@ -7,9 +7,12 @@ const nextConfig = {
                 protocol: 'http',
                 hostname: 'localhost',
                 port: '8000',
-                pathname: '/uploads/**',
-                
-                
+                pathname: '/uploads/**',  
+            },
+            {
+                protocol: 'https',
+                hostname: 'bitecultstorage.blob.core.windows.net',
+                pathname: '/uploads/**'
             },
         ],
     },
