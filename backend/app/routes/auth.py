@@ -136,7 +136,7 @@ def profileimage (
      image: UploadFile = File(...),
      current_user : Users = Depends(get_current_user)
 ):
-     filename = f"{uuid.uuid4().hex}_{image.filename}"
+     filename = f"{uuid.uuid4().hex}_{image.filename.lower()}"
      blob_client = container_client.get_blob_client(filename)
 
      try:

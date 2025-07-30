@@ -106,7 +106,7 @@ useEffect( () => {
         {/* Recipe Image */}
         <div className="relative w-full h-96">
           <Image
-            src={`https://bitecultstorage.blob.core.windows.net/uploads/${item.image}`}
+            src={`https://bitecultstorage.blob.core.windows.net/uploads/${recipe.image}`}
             // src={`http://localhost:8000/uploads/${recipe.image}`}
             alt={recipe.title}
             fill
@@ -146,9 +146,17 @@ useEffect( () => {
           <div className="mt-6">
             <h3 className="font-bold mb-2 text-black">Ingredients</h3>
             <ul className="list-disc list-inside space-y-1 text-gray-700">
-              {recipe.ingredients.split(',').map((item, idx) => (
-                <li key={idx} dangerouslySetInnerHTML={{ __html: highlightAmount(item) }} />
-              ))}
+              {recipe.ingredients.split(',').map((item, idx) => {
+                const match = item.match(/^\s*([\d\/\s\w.]+)(?=\s)/)
+                const amount = match ? match[1] : null
+                const rest = amount ? item.replace(amount, '').trim() : item
+
+                return (
+                  <li key={idx}>
+                    {amount && <strong>{amount}</strong>} {rest}
+                  </li>
+                )
+              })}
             </ul>
           </div>
 

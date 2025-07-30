@@ -56,7 +56,7 @@ export default function About() {
             From Our Kitchen to Yours
           </h2>
           <p className="text-gray-600 text-base md:text-lg">
-            TastyCrave was born out of our shared love for food and the occasional frustration we felt whenever we wanted to try something new. As passionate food lovers, my partner and I often found ourselves hopping between various recipe websites, searching for that <em>perfect</em> dish that suited our preferences – whether vegan, spicy, sweet or something in between.
+            BiteCult was born out of our shared love for food and the occasional frustration we felt whenever we wanted to try something new. As passionate food lovers, my partner and I often found ourselves hopping between various recipe websites, searching for that <em>perfect</em> dish that suited our preferences – whether vegan, spicy, sweet or something in between.
           </p>
           <p className="text-gray-600 text-base md:text-lg">
             With both of us coming from technology backgrounds, we began to wonder: what if there were a single, personalised space to find and share all kinds of recipes tailored to individual tastes? A digital recipe book designed to be as flexible as your cravings.

@@ -129,7 +129,7 @@ async def create_recipe(
     current_user: Users = Depends(get_current_user)
 ):
     # upload to azure
-    filename = f"{uuid.uuid4().hex}_{image.filename}"
+    filename = f"{uuid.uuid4().hex}_{image.filename.lower()}"
     blob_client = container_client.get_blob_client(filename)
     blob_client.upload_blob(image.file, overwrite=True)
     # file_path = os.path.join(UPLOAD_DIR, filename)
@@ -221,7 +221,7 @@ def update_myrecipe(
             except Exception:
                 pass  # fail silently if not found
 
-        new_filename = f"{uuid.uuid4().hex}_{image.filename}"
+        new_filename = f"{uuid.uuid4().hex}_{image.filename.lower()}"
         blob_client = container_client.get_blob_client(new_filename)
         blob_client.upload_blob(image.file, overwrite=True)
         recipe.image = new_filename
