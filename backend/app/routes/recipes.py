@@ -199,10 +199,27 @@ def get_user_created_recipes(db: Session = Depends(get_db), current_user: Users 
 def update_myrecipe(
     recipe_id: int,
     title: str = Form(None),
+    suitable_for: str = Form(None),
+    cooking_time: int = Form(None),
+    instructions: str = Form(None),
+    allergens: str = Form(None),
+    category: str = Form(None),
+    ingredients: str = Form(None),
+    calories: int = Form(None),
+    fat: int = Form(None),
+    sugar: int = Form(None),
+    protine: int = Form(None),
+    carbs: int = Form(None),
+    cooking_method: str = Form(None),
+    difficulty: str = Form(None),
+    origin: str = Form(None),
+    tips: str = Form(None),
+    substitution: str = Form(None),
+    tag: str = Form(None),
+    serves: int = Form(None),
     image: UploadFile = File(None),
-    # recipe_update: RecipeUpdate,  
     db: Session = Depends(get_db),
-    current_user: Users = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user)  
 ):
     recipe = db.query(Recipe).filter_by(id=recipe_id, user_id=current_user.id).first()
     if not recipe:
@@ -251,14 +268,20 @@ def remove_myrecipe(
     current_user: Users = Depends(get_current_user)
 ):
     myrecipe = db.query(Recipe).filter_by(user_id=current_user.id, id=recipe_id).first()
+    print("Attempting to delete recipe:", recipe_id)
+    print("Current user ID:", current_user.id)
+
     if not myrecipe:
+        print("No matching recipe found for this user")
         raise HTTPException(status_code=404, detail="recipe not found")
     
     # Delete image from Azure Blob
     if myrecipe.image:
         try:
             container_client.delete_blob(myrecipe.image)
-        except Exception:
+            print(f"Deleted blob: {myrecipe.image}")
+        except Exception as e:
+            print(f"Blob delete failed: {e}")
             pass  # ignore if image not found
         
     db.delete(myrecipe)

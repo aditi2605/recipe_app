@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
 export default function Nav( { trigger }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [modal, setModal] = useState(null) 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -17,7 +17,7 @@ export default function Nav( { trigger }) {
   const [loading, setLoading] = useState(false)
   const [iconIndex, setIconIndex] = useState(0)
   const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  // const [menuOpen, setMenuOpen] = useState(false)
 
 
 
@@ -26,6 +26,7 @@ export default function Nav( { trigger }) {
 
   const toggleModal = (type) => setModal(type)
  
+  
 
   // scroll behavior: move logo to bottom
   useEffect(() => {
@@ -58,9 +59,8 @@ export default function Nav( { trigger }) {
       const data = await response.json()
       if (response.ok) {
         localStorage.setItem('token', data.access_token)
-        setTimeout(() => {
-          window.location.href = '/Dashboard';
-        }, 3000)
+        router.push('/Dashboard')
+        // window.location.href = '/Dashboard';
       } else {
         alert(data.detail?.[0]?.msg || 'Login Failed')
       }
@@ -135,13 +135,15 @@ export default function Nav( { trigger }) {
   //   return () => clearInterval(interval)
   // }, [loading])
 
-{loading && (
-  <div className="fixed inset-0 bg-black/70 z-[999] flex items-center justify-center">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#FF6B6B] border-opacity-80" />
-  </div>
-)}
+
   return (
     <>
+      {/* loading spinner */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/70 z-[999] flex items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#FF6B6B] border-opacity-80" />
+        </div>
+      )}
       <div ref={containerRef}>
         <motion.div 
           className='fixed z-50' 

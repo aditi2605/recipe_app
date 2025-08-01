@@ -70,69 +70,120 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
     }, [])
 
     // update myrecipe
-   const UpdateMyRecipe = async (recipeId, updatedData) => {
-  try {
-    let imageFilename = updatedData.image;
+    const UpdateMyRecipe = async (recipeId, updatedData) => {
+      try {
+        const formData = new FormData();
+        formData.append("title", updatedData.title);
+        formData.append("allergens", updatedData.allergens);
+        formData.append("suitable_for", updatedData.suitablefor);
+        formData.append("cooking_time", updatedData.cooking_time);
+        formData.append("origin", updatedData.origin);
+        formData.append("difficulty", updatedData.difficulty);
+        formData.append("calories", updatedData.calories);
+        formData.append("fat", updatedData.fat);
+        formData.append("sugar", updatedData.sugar);
+        formData.append("carbs", updatedData.carbs);
+        formData.append("protine", updatedData.protine);
+        formData.append("tag", updatedData.tag);
+        formData.append("serves", updatedData.serves);
+        formData.append("ingredients", updatedData.ingredients.join(", "));
+        formData.append("instructions", updatedData.instructions.join("\n"));
+        formData.append("tips", updatedData.tips.join("\n"));
+        formData.append("substitution", updatedData.substitution.join(", "));
 
-    // If a new image is uploaded, upload it first
-    if (updatedData.image instanceof File) {
-      const formDataImage = new FormData();
-      formDataImage.append("file", updatedData.image);
+        // Only include image if it's a File object
+        if (updatedData.image instanceof File) {
+          formData.append("image", updatedData.image);
+        }
 
-      const imageUploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload-image`, {
-        method: "POST",
-        body: formDataImage,
-      });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/myrecipes/${recipeId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        });
 
-      if (!imageUploadResponse.ok) {
-        throw new Error("Image upload failed");
+        if (response.ok) {
+          const updatedRecipe = await response.json();
+          setMyRecipes((prev) =>
+            prev.map((recipe) => (recipe.id === recipeId ? updatedRecipe : recipe))
+          );
+        } else {
+          const errData = await response.json();
+          console.error("Failed to update recipe:", errData);
+        }
+      } catch (err) {
+        console.error("Error updating recipe", err);
       }
-
-      const imageData = await imageUploadResponse.json();
-      imageFilename = imageData.filename; // e.g., 'burger.jpg'
-    }
-
-    // Build plain JSON object for PUT request
-    const updateBody = {
-      title: updatedData.title,
-      allergens: updatedData.allergens,
-      suitable_for: updatedData.suitable_for,
-      cooking_time: updatedData.cooking_time,
-      origin: updatedData.origin,
-      difficulty: updatedData.difficulty,
-      calories: updatedData.calories,
-      fat: updatedData.fat,
-      sugar: updatedData.sugar,
-      carbs: updatedData.carbs,
-      protine: updatedData.protine,
-      tag: updatedData.tag,
-      serves: updatedData.serves,
-      ingredients: updatedData.ingredients.join(", "),
-      instructions: updatedData.instructions.join("\n"),
-      tips: updatedData.tips.join("\n"),
-      substitution: updatedData.substitution.join(", "),
-      image: imageFilename, 
     };
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/myrecipes/${recipeId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(updateBody),
-    });
 
-    if (response.ok) {
-      setMyRecipes(prev => prev.filter(r => r.id !== recipeId));
-    } else {
-      const errData = await response.json();
-      console.error("Failed to update recipe:", errData);
-    }
-  } catch (err) {
-    console.error("Error updating recipe", err);
-  }
-};
+
+
+    //  const UpdateMyRecipe = async (recipeId, updatedData) => {
+    //   try {
+    //     let imageFilename = updatedData.image;
+
+    //     // If a new image is uploaded, upload it first
+    //     if (updatedData.image instanceof File) {
+    //       const formDataImage = new FormData();
+    //       formDataImage.append("file", updatedData.image);
+
+    //       const imageUploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload-image`, {
+    //         method: "POST",
+    //         body: formDataImage,
+    //       });
+
+    //       if (!imageUploadResponse.ok) {
+    //         throw new Error("Image upload failed");
+    //       }
+
+    //       const imageData = await imageUploadResponse.json();
+    //       imageFilename = imageData.filename;
+    //     }
+
+    //     // Build plain JSON object for PUT request
+    //     const updateBody = {
+    //       title: updatedData.title,
+    //       allergens: updatedData.allergens,
+    //       suitable_for: updatedData.suitable_for,
+    //       cooking_time: updatedData.cooking_time,
+    //       origin: updatedData.origin,
+    //       difficulty: updatedData.difficulty,
+    //       calories: updatedData.calories,
+    //       fat: updatedData.fat,
+    //       sugar: updatedData.sugar,
+    //       carbs: updatedData.carbs,
+    //       protine: updatedData.protine,
+    //       tag: updatedData.tag,
+    //       serves: updatedData.serves,
+    //       ingredients: updatedData.ingredients.join(", "),
+    //       instructions: updatedData.instructions.join("\n"),
+    //       tips: updatedData.tips.join("\n"),
+    //       substitution: updatedData.substitution.join(", "),
+    //       image: imageFilename, 
+    //     };
+
+    //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/myrecipes/${recipeId}`, {
+    //       method: "PUT",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //       body: JSON.stringify(updateBody),
+    //     });
+
+    //     if (response.ok) {
+    //       setMyRecipes(prev => prev.filter(r => r.id !== recipeId));
+    //     } else {
+    //       const errData = await response.json();
+    //       console.error("Failed to update recipe:", errData);
+    //     }
+    //   } catch (err) {
+    //     console.error("Error updating recipe", err);
+    //   }
+    // };
 
 
     //  delete my recipe
@@ -144,6 +195,7 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
           'Authorization': `Bearer ${localStorage.getItem("token")}`,
         },
       })
+      console.log('response', response)
       if (response.ok) {
         setMyRecipes(prev => prev.filter(r => r.id !== recipeId))
       } else {
@@ -168,7 +220,7 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
                                 {/* Recipe Image */}
                                 <div className="relative w-full h-56 sm:h-64">
                                     <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${item.image}`}
+                                    src={`https://bitecultstorage.blob.core.windows.net/uploads/${item.image}`}
                                     // src={`http://localhost:8000/uploads/${item.image}`}
                                     alt={item.title}
                                     layout="fill"

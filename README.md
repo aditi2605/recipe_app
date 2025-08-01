@@ -50,9 +50,9 @@ Database: PostgreSQL (Render)
 
 ## Screenshots
 
-`![Homepage](screenshots/lending_page.png)`
-`![Loginpage](screenshots/login_signup.png)`
-`![Dashboard](screenshots/dashboard.png)`
+![Homepage](screenshots/lending_page.png)
+![Loginpage](screenshots/login_signup.png)
+![Dashboard](screenshots/dashboard.png)
 
 ## Live Demo
 Check out the live app here: [Live Demo](https://bitecult.vercel.app/)

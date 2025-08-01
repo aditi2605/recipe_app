@@ -181,11 +181,11 @@ useEffect( () => {
           {/* Nutrition */}
           <div className="mt-6">
             <h3 className="font-bold mb-2 text-black">Nutrition</h3>
-            <p className="text-gray-700">{recipe.calories} cal</p>
-            <p className="text-gray-700">{recipe.sugar} sugar</p>
-            <p className="text-gray-700">{recipe.fat} fat</p>
-            <p className="text-gray-700">{recipe.carbs} carbs</p>
-            <p className="text-gray-700">{recipe.protine} protine</p>
+            <p className="text-gray-700">{recipe.calories}g Kcal</p>
+            <p className="text-gray-700">{recipe.sugar}g sugar</p>
+            <p className="text-gray-700">{recipe.fat}g fat</p>
+            <p className="text-gray-700">{recipe.carbs}g carbs</p>
+            <p className="text-gray-700">{recipe.protine}g protein</p>
           </div>
 
           {/* Suitable For */}
