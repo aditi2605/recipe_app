@@ -138,7 +138,7 @@ useEffect( () => {
           <div className="flex flex-wrap gap-1 my-2 text-black justify-center items-center">
             <InfoBadge className='text-black' icon={<Clock className='w-10 h-8 text-black' />} label={`${recipe.cooking_time} min`} />
             <InfoBadge icon={<UsersRound className='w-10 h-8 text-black'  />} label={`${recipe.serves} Serving`} />
-            <InfoBadge icon={<Flame className='w-10 h-8 text-black'  />} label={`${recipe.calories} Cal`} />
+            <InfoBadge icon={<Flame className='w-10 h-8 text-black'  />} label={`${recipe.calories} Kcal`} />
             <InfoBadge icon={<Layers className='w-10 h-8 text-black'  />} label={`${recipe.difficulty || 'Easy'}`} />
           </div>
 

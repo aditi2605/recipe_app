@@ -24,6 +24,17 @@ export default function Dashboard( ) {
   const [searchInput, setSearchInput] = useState("")
   const [loadingDashboard, setLoadingDashboard] = useState(true)
 
+
+  const cuisines = [
+  { label: '🍱 Indian', value: 'India' },
+  { label: '🍣 Japanese', value: 'Japan' },
+  { label: '🍚 Greek', value: 'Greece' },
+  { label: '🍜 Asian', value: 'Asia' }, 
+  { label: '🍕 Italian', value: 'Italy' },
+  { label: '🍤 Spanish', value: 'Spain' }, 
+  { label: '🍔 American', value: 'United States' },
+];
+
   // loading
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -172,33 +183,28 @@ export default function Dashboard( ) {
               <motion.div layout className="overflow-x-auto pb-4 w-full relative z-10 hide-scrollbar">
                 <div className="flex space-x-4 justify-center items-center">
                   <ul className="flex w-max gap-4">
-                    {[
-                      '🍱  Indian',
-                      '🍣  Japanese',
-                      '🍚  Greek',
-                      '🍜  Asian',
-                      '🍕  Italian',
-                      '🍤  Spanish',
-                      '🍔  American',
-                    ].map((label, index) => (
+                    {cuisines.map((cuisine, index) => (
                       <li
                         key={index}
-                        onClick={() => {setSelectedCuisine(label.trim().split(' ')[2]); setSearchQuery("");
-                        setFilters({
-                          vegan: false,
-                          vegetarian: false,
-                          nonveg: false,
-                          glutenfree: false
-                        });
-                      }}
+                        onClick={() => {
+                          setSelectedCuisine(cuisine.value);
+                          setSearchQuery("");
+                          setFilters({
+                            vegan: false,
+                            vegetarian: false,
+                            nonveg: false,
+                            glutenfree: false
+                          });
+                        }}
                         className="min-w-max bg-amber-200 px-5 py-2 text-pink-400 text-lg md:text-base font-medium rounded-full hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap"
                       >
-                        {label}
+                        {cuisine.label}
                       </li>
                     ))}
                   </ul>
                 </div>
               </motion.div>
+
               {/* suitable_for */}
               <div className="flex justify-center flex-col gap-4 mx-4 my-8">
                 <div className="flex flex-row gap-6">
@@ -285,7 +291,7 @@ export default function Dashboard( ) {
                   <ScrollCards onViewRecipe={handleViewRecipe} handleAddToFavorites={handleAddToFavorites} favourites={favourites} />
                 )}
                 {selectedView === 'favorites' && <Favorites onViewRecipe={handleViewRecipe} handleAddToFavorites={handleAddToFavorites} favourites={favourites} />}
-                {selectedView === 'addrecipe' && <CreateRecipe />}
+                {selectedView === 'addrecipe' && <CreateRecipe setSelectedView={setSelectedView} />}
                 {selectedView === 'viewRecipe' && (
                   <ViewRecipe recipeId={selectedRecipeId} setSelectedView={setSelectedView} />
                 )}

@@ -5,7 +5,7 @@ import Select from 'react-select'
 import countryList from 'react-select-country-list'
 import { useRouter } from 'next/navigation'
 
-export default function CreateRecipe() {
+export default function CreateRecipe( {setSelectedView }) {
 
   const router = useRouter()
 
@@ -32,6 +32,10 @@ export default function CreateRecipe() {
   const [tags, setTags] = useState('')
 
   const options = useMemo(() => countryList().getData(), [])
+
+   const handleRedirect = () => {
+        setSelectedView('dashboard')
+    }
 
   const changeHandler = value => {
     setOrigin(value.label) // store country names
@@ -316,6 +320,7 @@ export default function CreateRecipe() {
         <div className="col-span-2 text-center mt-6">
           <button
             type="submit"
+            onClick={handleRedirect}
             className="bg-[#FF6B6B] text-white px-6 py-3 rounded-full hover:bg-green-700 transition duration-300"
           >
             Submit Recipe
