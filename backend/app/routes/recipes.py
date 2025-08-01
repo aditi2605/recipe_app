@@ -261,34 +261,32 @@ def update_myrecipe(
 
 # delete mycreatedrecipes
 @router.delete("/myrecipes/{recipe_id}", status_code=204)
-def remove_myrecipe(
-    recipe_id: int, 
-    # recipe_update: RecipeUpdate,
-    db: Session = Depends(get_db), 
-    current_user: Users = Depends(get_current_user)
-):
+# Remove My Recipe
+def remove_myrecipe(recipe_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     myrecipe = db.query(Recipe).filter_by(user_id=current_user.id, id=recipe_id).first()
     print("Attempting to delete recipe:", recipe_id)
     print("Current user ID:", current_user.id)
 
     if not myrecipe:
-        print("No matching recipe found for this user")
-        raise HTTPException(status_code=404, detail="recipe not found")
-    
-    # delete all Fav. that reference this recipe
-    db.query(Favorite).filter(Favorite.recipe.id == recipe_id).delete()
-    
-    # Delete image from Azure Blob
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    # Remove associated favorites
+    db.query(Favorite).filter(Favorite.recipe_id == recipe_id).delete()
+
+    # Delete from Azure Blob
     if myrecipe.image:
         try:
             container_client.delete_blob(myrecipe.image)
             print(f"Deleted blob: {myrecipe.image}")
         except Exception as e:
             print(f"Blob delete failed: {e}")
-            pass  # ignore if image not found
-        
+            pass
+
+    # Delete the recipe
     db.delete(myrecipe)
     db.commit()
+
+    return {"detail": "Recipe deleted successfully"}
 
 # get recipes by id
 @router.get("/recipes/{id}", response_model=RecipeRead)
