@@ -26,13 +26,13 @@ export default function Dashboard( ) {
 
 
   const cuisines = [
-  { label: '🍱 Indian', value: 'India' },
-  { label: '🍣 Japanese', value: 'Japan' },
-  { label: '🍚 Greek', value: 'Greece' },
-  { label: '🍜 Asian', value: 'Asia' }, 
-  { label: '🍕 Italian', value: 'Italy' },
-  { label: '🍤 Spanish', value: 'Spain' }, 
-  { label: '🍔 American', value: 'United States' },
+  { label: '🍱 Indian', value: 'india' },
+  { label: '🍣 Japanese', value: 'japan' },
+  { label: '🍚 Greek', value: 'greece' },
+  { label: '🍜 Asian', value: 'asia' }, 
+  { label: '🍕 Italian', value: 'italy' },
+  { label: '🍤 Spanish', value: 'spain' }, 
+  { label: '🍔 American', value: 'united states' },
 ];
 
   // loading
