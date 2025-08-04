@@ -57,13 +57,19 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
                             'Authorization': `Bearer ${localStorage.getItem("token")}`,
                         },
                     }
-                )
-                const data = await response.json()
-                console.log(response)
-                setMyRecipes(data)
-                
-            } catch(err){
-                console.error("Failed to fetch recipes created by you", err)
+                );
+                if (!response.ok) {
+                console.error("Non-200 response:", response.status);
+                setMyRecipes([]);
+                return;
+              }
+
+              const data = await response.json();
+              console.log("Fetched myRecipes:", data);
+              setMyRecipes(Array.isArray(data) ? data : []);
+            } catch (err) {
+              console.error("Failed to fetch recipes created by you", err);
+              setMyRecipes([]);
             }
         }
         fetchMyCreatedRecipes()
@@ -210,15 +216,13 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
         <div className="w-full px-4 md:px-10 py-12 space-y-16">
             <section>
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
+                    {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length === 0 && (
+                      <div className='w-full text-center text-[#FF6B6B] text-lg font-semibold py-12'>
+                         <p className="text-[#FF6B6B] text-xl font-semibold"> 🍽 You haven’t created any recipes yet!</p>
+                         <p className="text-gray-500 text-sm">Click “Create Recipe” to start cooking something amazing ✨</p>
+                      </div>
+                    )}
                     <div className="flex space-x-4 justify-center min-w-full">
-                        {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length === 0 && (
-                          <div className='w-full text-center text-[#FF6B6B] text-lg font-semibold py-12'>
-                            <p className="text-[#FF6B6B] text-xl font-semibold"> 🍽 You haven’t created any recipes yet!</p>
-                            <p className="text-gray-500 text-sm">Click “Create Recipe” to start cooking something amazing ✨</p>
-                          </div>
-
-                        )}
-
                         {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length > 0 && myRecipes.map((item) => (
                             <motion.div
                                 key={item.id}
