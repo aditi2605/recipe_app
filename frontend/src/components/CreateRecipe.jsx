@@ -89,12 +89,12 @@ export default function CreateRecipe( {setSelectedView }) {
   }
 
   return (
-    <div className="w-full mx-auto min-h-screen bg-amber-50 shadow-md p-6">
+    <div className="w-full min-h-screen bg-amber-50 shadow-md px-4 py-6 overflow-x-hidden">
       <h2 className="text-3xl font-bold text-center text-[#FF6B6B] mb-8">🍳 Create Your Own Recipe</h2>
 
       <form
         onSubmit={handleSubmit}
-        className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 bg-white rounded-3xl shadow-2xl p-10 mt-12 border border-[#FF6B6B]"
+        className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 bg-white rounded-2xl shadow-2xl p-6 sm:p-10 mt-6 border border-[#FF6B6B]"
       >
         {/* Basic Info */}
         <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B]">Basic Info</h3>
