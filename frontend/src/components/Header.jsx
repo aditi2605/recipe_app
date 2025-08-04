@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect} from 'react'
 import { motion } from 'framer-motion'
 import { Search, Settings, Lock, BellDot, Info, Heart, Pencil  } from 'lucide-react'

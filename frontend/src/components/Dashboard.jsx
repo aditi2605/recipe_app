@@ -104,7 +104,6 @@ export default function Dashboard( ) {
     }, [])
 
     // suitable_for
-
     const [filters, setFilters] = useState({
         vegan: false,
         vegetarian: false,
@@ -207,7 +206,8 @@ export default function Dashboard( ) {
 
               {/* suitable_for */}
               <div className="flex justify-center flex-col gap-4 mx-4 my-8">
-                <div className="flex flex-row gap-6">
+                <div className='w-full px-4'>
+                    <div className="flex flex-wrap justify-center gap-4">
                     <label className="relative cursor-pointer flex flex-row gap-1 text-pink-500">
                     <input
                         type="checkbox"
@@ -253,8 +253,9 @@ export default function Dashboard( ) {
                     />
                     <div className="w-11 h-6 bg-amber-200 peer-checked:bg-green-800 rounded-full transition-all duration-300"></div>
                     <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform duration-300"></div>
-                    Gluten-Free
+                      Gluten-Free
                     </label>
+                  </div>
                 </div>
               </div>
       

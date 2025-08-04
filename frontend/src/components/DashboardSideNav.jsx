@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Logo from '../../public/images/bite_cult_logo.png'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { LayoutDashboard, Heart, PlusCircle, LogOut, ScrollText } from 'lucide-react'
@@ -10,17 +10,28 @@ import NavItem from './NavItem'
 
 export default function DashboardSideNav({ onSelect }) {
   const [isHovered, setIsHovered] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
 
-  const isOpen = isHovered
+  //set isMobile based on screen
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const isOpen = !isMobile && isHovered // only open if not mobile screen
 
   return (
     <div
       className={`h-screen transition-all duration-300 ease-in-out flex flex-col p-4 z-50
         ${isOpen ? 'w-60' : 'w-20'}
         bg-amber-200 text-[#F7FFF7]`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
       {/* Logo */}
           <motion.div

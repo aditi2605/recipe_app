@@ -25,6 +25,11 @@ export default function Nav( { trigger }) {
   const containerRef = useRef()
 
   const toggleModal = (type) => setModal(type)
+
+ function isValidEmail(email) {
+  const pattern = /^[^\s@]+@(gmail\.com|yahoo\.com|hotmail\.com|outlook\.com|icloud\.com|live\.com|protonmail\.com|aol\.com|msn\.com|yandex\.com|zoho\.com|mail\.com|gmx\.com|rediffmail\.com|tutanota\.com|inbox\.com|fastmail\.com)$/i;
+  return pattern.test(email);
+}
  
   
 
@@ -42,6 +47,12 @@ export default function Nav( { trigger }) {
 
   const handleLogin = async (e) => {
     e.preventDefault()
+
+    if(!isValidEmail(email.trim())) {
+      alert('Please enter a valid email address')
+      return
+    }
+
     setLoading(true)
 
     const formData = new URLSearchParams()
@@ -74,6 +85,12 @@ export default function Nav( { trigger }) {
 
   const handleSignup = async (e) => {
     e.preventDefault()
+
+    if (!isValidEmail(email.trim())) {
+      alert('Please enter valid email address')
+      return
+    }
+    
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signin`, {
       method: 'POST',
       body: JSON.stringify({ username, email, password }),
