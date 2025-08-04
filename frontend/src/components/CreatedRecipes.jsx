@@ -210,7 +210,7 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
         <div className="w-full px-4 md:px-10 py-12 space-y-16">
             <section>
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 justify-center min-w-full">
                         {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length === 0 && (
                           <div className='w-full text-center text-[#FF6B6B] text-lg font-semibold py-12'>
                             <p className="text-[#FF6B6B] text-xl font-semibold"> 🍽 You haven’t created any recipes yet!</p>

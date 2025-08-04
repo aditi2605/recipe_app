@@ -109,9 +109,10 @@ export default function CreateRecipe( {setSelectedView }) {
       >
         {/* Basic Info */}
         <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B]">Basic Info</h3>
-        
-        <input  placeholder='Recipe Name' value={recipename} onChange={(e) => setRecipename(e.target.value)} className="text-black border border-amber-300 p-2 shadow-md rounded-xl" required />
-        
+
+        <div className="w-full">
+          <input  placeholder='Recipe Name' value={recipename} onChange={(e) => setRecipename(e.target.value)} className="w-full text-black border border-amber-300 p-2 shadow-md rounded-xl" required />
+        </div>
      
 
         {/* <select
@@ -128,91 +129,102 @@ export default function CreateRecipe( {setSelectedView }) {
           <option value="French">French</option>
         </select> */}
 
-        <select
-          value={allergens}
-          onChange={(e) => setAllergens(e.target.value)}
-          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
-        >
-          <option value="">Select Allergen</option>
-          <option value="Soya">Soya</option>
-          <option value="Nuts">Nuts</option>
-          <option value="Dairy">Dairy</option>
-          <option value="Gluten">Gluten</option>
-          <option value="Fish">Fish</option>
-          <option value="None">None</option>
-        </select>
+        <div className="w-full">
+          <select
+            value={allergens}
+            onChange={(e) => setAllergens(e.target.value)}
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+          >
+            <option value="">Select Allergen</option>
+            <option value="Soya">Soya</option>
+            <option value="Nuts">Nuts</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Gluten">Gluten</option>
+            <option value="Fish">Fish</option>
+            <option value="None">None</option>
+          </select>
+        </div>
 
-        <select
-          value={suitablefor}
-          onChange={(e) => setSuitablefor(e.target.value)}
-          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
-          required
-        >
-          <option value="">Suitable For</option>
-          <option value="vegan">Vegan</option>
-          <option value="vegetarian">Vegetarian</option>
-          <option value="nonveg">Non-Vegetarian</option>
-          <option value="glutenfree">Gluten-Free</option>
-          <option value="glutenfree">All</option>
-        </select>
+        <div className="w-full">
+          <select
+            value={suitablefor}
+            onChange={(e) => setSuitablefor(e.target.value)}
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+            required
+          >
+            <option value="">Suitable For</option>
+            <option value="vegan">Vegan</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="nonveg">Non-Vegetarian</option>
+            <option value="glutenfree">Gluten-Free</option>
+            <option value="glutenfree">All</option>
+          </select>
+        </div>
 
         {/* cooking difficulty level */}
-        <select
-          value={difficulty}
-          onChange={(e) => setDiffculty(e.target.value)}
-          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
-          required
-        >
-          <option value="">Select Difficulty</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-
+        <div className="w-full">
+          <select
+            value={difficulty}
+            onChange={(e) => setDiffculty(e.target.value)}
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+            required
+          >
+            <option value="">Select Difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
 
 
         {/* Country Origin */}
-        <div className="sm:col-span-2 w-full">
-          <label className="block mb-1 text-black">Country Origin</label>
-          <div className="border border-amber-200 shadow-md rounded-xl text-black w-full">
-            <Select options={options} onChange={changeHandler} styles={customStyles} className="w-full"/>
+        <div className="w-full">
+          <div className="sm:col-span-2 w-full">
+            <label className="block mb-1 text-black">Country Origin</label>
+            <div className="border border-amber-200 shadow-md rounded-xl text-black w-full">
+              <Select options={options} onChange={changeHandler} styles={customStyles} className="w-full"/>
+            </div>
           </div>
         </div>
 
         {/*  Nutrition */}
         <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B] mt-4">Nutrition Info</h3>
         {[['Calories', calories, setCalories], ['Fat', fat, setFat], ['Sugar', sugar, setSugar], ['Carbs', carbs, setCarbs], ['Protein', protine, setProtine]].map(([label, value, setter]) => (
-          <input
-            key={label}
-            type="number"
-            value={value}
-            placeholder={label}
-            onChange={(e) => setter(e.target.value)}
-            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
-            required
-          />
+          <div className="w-full">
+            <input
+              key={label}
+              type="number"
+              value={value}
+              placeholder={label}
+              onChange={(e) => setter(e.target.value)}
+              className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+              required
+            />
+          </div>
         ))}
 
         {/* tag */}
-         <select
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-          className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
-        >
-          <option value="">Select Tag</option>
-          <option value="classic">Classic</option>
-          <option value="trending">Trending</option>
-          <option value="healthy">Healthy</option>
-          <option value="Recommended">Recommended</option>
-          <option value="streetfood">Streetfood</option>
-          <option value="chef-choice">Chef-Choice</option>
-          <option value="popular">Popular</option>
-        </select>
+        <div className="w-full">
+          <select
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            className="w-full p-2 border border-amber-200 shadow-md rounded-xl text-black"
+          >
+            <option value="">Select Tag</option>
+            <option value="classic">Classic</option>
+            <option value="trending">Trending</option>
+            <option value="healthy">Healthy</option>
+            <option value="Recommended">Recommended</option>
+            <option value="streetfood">Streetfood</option>
+            <option value="chef-choice">Chef-Choice</option>
+            <option value="popular">Popular</option>
+          </select>
+        </div>
 
         {/* Serves */}
         <div className="flex flex-col w-full">
           <label className="text-black mb-1">Serves</label>
-          <div className="flex flex-wrap justify-start gap-2 items-center">
+          <div className="flex flex-wrap justify-start gap-2 items-center w-full">
             <button type="button" onClick={() => setServes(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
             <input type="number" value={serves} readOnly className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
             <button type="button" onClick={() => setServes(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>
@@ -222,7 +234,7 @@ export default function CreateRecipe( {setSelectedView }) {
         {/* Cooking Time */}
         <div className="flex flex-col w-full">
           <label className="text-black mb-1">Cooking Time (minutes)</label>
-          <div className="flex flex-wrap justify-start gap-2 items-center">
+          <div className="flex flex-wrap justify-start gap-2 items-center w-full">
             <button type="button" onClick={() => setCookingtime(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
             <input type="number" value={cookingtime} min="0" onChange={e => {const value = parseInt(e.target.value); if (isNaN(value) || value< 0) { setCookingtime(0)} else { setCookingtime(value)}}} className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
             <button type="button" onClick={() => setCookingtime(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>

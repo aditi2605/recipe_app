@@ -139,28 +139,30 @@ export default function Header({ handleSearchSubmit, handleViewRecipe, handleAdd
 
     return (
      <div className=" flex flex-nowrap items-center justify-between gap-4 w-full px-4 py-2">
-        <div className="relative flex-grow">
-            <Search className="absolute top-1/2 right-3 transform -translate-y-1/2 text-pink-500" />
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Search recipes"
-                    className="w-full pl-10 pr-8 py-2 bg-white text-pink-500 border border-amber-300 rounded-full text-sm sm:text-base sm:placeholder:text-base truncate focus:outline-none focus:ring-2 focus:ring-amber-300"
+        <div className="flex items-center gap-4 w-full px-4 py-2">
+            <div className="relative flex-grow">
+                <Search className="absolute top-1/2 right-3 transform -translate-y-1/2 text-pink-500" />
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Search recipes"
+                        className="w-full pl-10 pr-8 py-2 bg-white text-pink-500 border border-amber-300 rounded-full text-sm sm:text-base sm:placeholder:text-base truncate focus:outline-none focus:ring-2 focus:ring-amber-300"
+                    />
+            </div>
+            <div className="flex-shrink-0 w-[48px] h-[48px] md:w-[60px] md:h-[60px] relative">
+                
+                <Image
+                    src={profileImage}
+                    alt="profileimage"
+                    fill
+                    className="rounded-full object-cover border-4 border-amber-300 shadow-xl"
+                    onClick={handleClick}
+                    
                 />
-        </div>
-        <div className="flex-shrink-0 w-[48px] h-[48px] md:w-[60px] md:h-[60px]">
             
-            <Image
-                src={profileImage}
-                alt="profileimage"
-                fill
-                className="rounded-full object-cover border-4 border-amber-300 shadow-xl"
-                onClick={handleClick}
-                  
-            />
-           
+            </div>
         </div>
 
         {profileCard && (
