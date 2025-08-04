@@ -211,7 +211,15 @@ export default function CreatedRecipes({ onViewRecipe, favourites, handleAddToFa
             <section>
                 <div className="overflow-x-auto pb-4 hide-scrollbar">
                     <div className="flex space-x-4">
-                        {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.map((item) => (
+                        {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length === 0 && (
+                          <div className='w-full text-center text-[#FF6B6B] text-lg font-semibold py-12'>
+                            <p className="text-[#FF6B6B] text-xl font-semibold"> 🍽 You haven’t created any recipes yet!</p>
+                            <p className="text-gray-500 text-sm">Click “Create Recipe” to start cooking something amazing ✨</p>
+                          </div>
+
+                        )}
+
+                        {!recipeToEdit && Array.isArray(myRecipes) && myRecipes.length > 0 && myRecipes.map((item) => (
                             <motion.div
                                 key={item.id}
                                 whileHover={{ scal : 1.03 }}

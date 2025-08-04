@@ -33,6 +33,17 @@ export default function CreateRecipe( {setSelectedView }) {
 
   const options = useMemo(() => countryList().getData(), [])
 
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderRadius: '0.75rem',
+      borderColor: '#FBBF24', // amber-200
+      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+      padding: '2px',
+      fontSize: '0.9rem',
+    }),
+  };
+
    const handleRedirect = () => {
         setSelectedView('dashboard')
     }
@@ -94,7 +105,7 @@ export default function CreateRecipe( {setSelectedView }) {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 bg-white rounded-2xl shadow-2xl p-6 sm:p-10 mt-6 border border-[#FF6B6B]"
+        className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 bg-white rounded-2xl shadow-2xl p-6 sm:p-10 mt-6 border border-[#FF6B6B] overflow-hidden"
       >
         {/* Basic Info */}
         <h3 className="col-span-2 text-xl font-semibold text-[#FF6B6B]">Basic Info</h3>
@@ -161,10 +172,10 @@ export default function CreateRecipe( {setSelectedView }) {
 
 
         {/* Country Origin */}
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 w-full">
           <label className="block mb-1 text-black">Country Origin</label>
-          <div className="border border-amber-200 shadow-md rounded-xl text-black">
-            <Select options={options} onChange={changeHandler} />
+          <div className="border border-amber-200 shadow-md rounded-xl text-black w-full">
+            <Select options={options} onChange={changeHandler} styles={customStyles} className="w-full"/>
           </div>
         </div>
 
@@ -199,9 +210,9 @@ export default function CreateRecipe( {setSelectedView }) {
         </select>
 
         {/* Serves */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <label className="text-black mb-1">Serves</label>
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-wrap justify-start gap-2 items-center">
             <button type="button" onClick={() => setServes(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
             <input type="number" value={serves} readOnly className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
             <button type="button" onClick={() => setServes(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>
@@ -209,9 +220,9 @@ export default function CreateRecipe( {setSelectedView }) {
         </div>
 
         {/* Cooking Time */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           <label className="text-black mb-1">Cooking Time (minutes)</label>
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-wrap justify-start gap-2 items-center">
             <button type="button" onClick={() => setCookingtime(prev => Math.max(parseInt(prev || 0) - 1, 0))} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">-</button>
             <input type="number" value={cookingtime} min="0" onChange={e => {const value = parseInt(e.target.value); if (isNaN(value) || value< 0) { setCookingtime(0)} else { setCookingtime(value)}}} className="w-16 text-center border border-amber-200 p-2 rounded-xl text-black" />
             <button type="button" onClick={() => setCookingtime(prev => parseInt(prev || 0) + 1)} className="px-3 py-1 bg-[#FF6B6B] text-white rounded">+</button>

@@ -138,15 +138,15 @@ export default function Header({ handleSearchSubmit, handleViewRecipe, handleAdd
 
 
     return (
-     <div className=" flex flex-row items-center py-4 items-right justify-between gap-4 w-full px-4 py-2">
-        <div className="relative w-full sm:w-3/4 md:w-1/2 max-w-full">
+     <div className=" flex flex-col sm:flex-row items-center justify-between gap-4 w-full px-4 py-2">
+        <div className="relative w-full sm:w-3/4 md:w-1/2">
             <Search className="absolute top-1/2 right-3 transform -translate-y-1/2 text-pink-500" />
                 <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="What do you want to eat today?"
+                    placeholder="Search recipes"
                     className="w-full pl-10 pr-8 py-2 bg-white text-pink-500 border border-amber-300 rounded-full text-sm sm:text-base sm:placeholder:text-base truncate focus:outline-none focus:ring-2 focus:ring-amber-300"
                 />
         </div>
